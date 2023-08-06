@@ -80,7 +80,7 @@ int	*allocate_and_get_params(char *arr, int start)
 	int	*param;
 
 	param = malloc(sizeof(int) * 4);
-	param = get_params(arr, param, start);
+	param = get_params(arr, start);
 	return (param);
 }
 

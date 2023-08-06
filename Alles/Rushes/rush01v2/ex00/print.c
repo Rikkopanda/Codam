@@ -22,6 +22,7 @@ void	print(int **numbers)
 	j = 0;
 	while (i < 4)
 	{
+		write(1, " ", 1);
 		while (j < 4)
 		{
 			c = numbers[i][j] + '0';
