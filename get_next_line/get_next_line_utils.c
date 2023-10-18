@@ -50,9 +50,7 @@ void ft_lstadd_back(t_list **lst, t_list *new)
 t_list *ft_lstlast(t_list *lst)
 {
 	t_list *current;
-	int i;
 
-	i = 0;
 	if(lst == NULL)
 		return (0);
 	current = lst;

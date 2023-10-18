@@ -62,17 +62,15 @@ void clear_after_newline(char *str)
 	}
 }
 
-void create_list(int fd, t_list **list, char *after_newline)
+void create_list(int fd, t_list **list)
 {
 	int bytesread;
 	char *buff_str;
 	t_list *new_node;
 	t_list *last_node;
-	int i;
 
 	buff_str = calloc(sizeof(char) , BUFF_SIZE);
 	last_node = *list;
-	after_newline = NULL;
 	while(find_newline(last_node))//go to last of list and find
 	{
 		bytesread = read(fd, buff_str, 1);
@@ -183,7 +181,6 @@ char *make_next_line(t_list **list, int size)
 char *ret_next_line(t_list **list)
 {
 	char *next_line;
-	int i;
 	int size;
 
 	next_line = NULL;
@@ -213,12 +210,12 @@ char *get_next_line(int fd)
 {
 	t_list *list = NULL; // first node
 	char *next_line;
-	char *after_newline;
 
+	next_line = NULL;
 	if(fd < 0 || BUFF_SIZE <= 0 || read(fd, next_line, 0) > 0)
 		return (NULL);
 
-	create_list(fd, &list, after_newline);
+	create_list(fd, &list);
 
 	next_line = ret_next_line(&list);
 
@@ -238,7 +235,8 @@ int main()
 	int fd;
 	clock_t tic = clock();
 	fd = open("file.txt", O_RDONLY);
-	
+
+	next_line = (char *)1;
 	while(next_line != NULL)
 	{
 		next_line = get_next_line(fd);
