@@ -1,0 +1,20 @@
+
+
+strjoin =	ok
+bzero 	=	ok
+
+
+atoi 	=	some ko
+
+calloc	1.OK 2.MOK ==85748== Invalid write of size 1
+
+substr	= ko	seg
+
+split =	ko
+
+itoa = ko
+
+
+putnbr fd = nog maken
+
+alle lists nachecken
