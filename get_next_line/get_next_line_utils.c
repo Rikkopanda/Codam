@@ -25,14 +25,31 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-t_list *ft_lstnew(void *buffer)
+t_list *ft_lstnew_strdup(void *buffer)
 {
+	int len;
+	char *new_str;
+	char *str;
+	size_t i;
 	t_list *rtn;
 
+	i = 0;
+	str = buffer;
+	while(str[i])
+		i++;
+	len = i;
+	new_str = (char *)malloc(sizeof(char) * len + 1);
+	i = 0;
+	while(str[i])
+	{
+		new_str[i] = str[i];
+		i++;
+	}
+	new_str[i] = '\0';
 	rtn = (t_list *)malloc(sizeof(t_list));
 	if(!rtn)
 		return (NULL);
-	(*rtn).buffer = buffer;
+	(*rtn).buffer = new_str;
 	(*rtn).next = NULL;
 	return (rtn);
 }
@@ -54,53 +71,10 @@ t_list *ft_lstlast(t_list *lst)
 	if(lst == NULL)
 		return (0);
 	current = lst;
-	//printf("find last, i = %d\n", i);
 	while(current->next != NULL)
-	{
 		current = current->next;
-		//printf("find last, i = %d\n", i);
-	}
 		
 	return (current);
-}
-
-
-char *ft_strdup(const char *s)
-{
-	int len;
-	char *new_str;
-	char *str;
-
-	str = (char *)s;
-	len = ft_strlen(str);
-	new_str = (char *)malloc(sizeof(char) * len + 1);
-	ft_strcpy(new_str, str);
-	// 10 bytes (incl \n) +
-	return (new_str);
-}
-
-size_t ft_strlen(const char *s)
-{
-	size_t i;
-
-	i = 0;
-	while(s[i])
-		i++;
-	return (i);
-}
-
-void ft_strcpy(char *dest, const char *src)
-{
-	int i;
-
-	i = 0;
-	while(src[i])
-	{
-		dest[i] = src[i];
-		i++;
-	}
-		
-	dest[i] = '\0';
 }
 
 void ft_lstclear(t_list **lst)
@@ -114,18 +88,11 @@ void ft_lstclear(t_list **lst)
 		while (*lst)
 		{
 			tmp = (*lst)->next;
-			ft_lstdelone(*lst);
+			free((*lst)->buffer);
+			free((*lst));
+			*lst = 0;
 			*lst = tmp;
 		}
 	}
-	lst = 0;
-}
-
-void ft_lstdelone(t_list *lst)
-{
-	if(!lst)
-		return ;
-	free(lst->buffer);
-	free(lst);
 	lst = 0;
 }

@@ -8,8 +8,6 @@ char	*ft_strchr(const char *s, int c)
 	
 	s1 = (char *)s;
 	i = 0;
-	if(c > 256)
-		c = c - 256;
 	while(s1[i] != '\0')
 	{
 		if(s1[i] == c)

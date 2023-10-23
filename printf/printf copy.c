@@ -16,25 +16,6 @@ char *write_address(void *ptr);
 char hex_char(long long nbr);
 void	*ft_realloc(void *ptr, size_t newsize);
 
-char	*ft_strcat(char *dest, char *src)
-{
-	int	i;
-	int	j;
-
-	j = 0;
-	i = 0;
-	while (dest[i] != '\0')
-		i++;
-	while (src[j] != '\0')
-	{
-		dest[i] = src[j];
-		j++;
-		i++;
-	}
-	dest[i] = '\0';
-	return (dest);
-}
-
 struct alltags{
 	char *pre_str;
 	int precision; 
@@ -54,7 +35,6 @@ void ft_putstr(char *s)
 {
 	write(1, s, ft_strlen(s));
 }
-
 char *f_char_str(va_list args)
 {
 	char *ret_ptr;
@@ -169,13 +149,18 @@ char parse_tags_preced(const char *format, struct alltags *tagrules, va_list arg
 			(*i)++;
 		return('#');
 	}
+	//if(format[*i] == '-')
+	//if(format[*i] == ' ')
 	if(format[*i] == '.')
 	{
 		(*i)++;
+		//printf("\n in . parse i  %d\n" , *i);
+		//printf("\n in . parse %s\n" , &format[*i]);
 		if(format[*i] == '*')
 		{
 			tagrules->precision = va_arg(args, int);
 			(*i)++;
+			//printf("\n presisooin %d\n",  tagrules->precision);
 			return ('*');
 		}
 		else
@@ -183,6 +168,7 @@ char parse_tags_preced(const char *format, struct alltags *tagrules, va_list arg
 		incr_i = ft_strlen(ft_itoa(tagrules->precision));
 		*i = *i + incr_i;
 		return ('n');
+		//printf("\n in . parse i  %d\n" , *i);
 	}
 }
 
@@ -277,28 +263,6 @@ char parse_and_specify(const char *format, int *i, struct alltags *tagrules, va_
 }
 	//printf("|p%dp|", tagrules->precision);
 	//printf("|%c|", format[*i]);
-//int yeeeaaahhhh(char specifier, char *print_str, va_list args)
-//{
-//}
-
-char *unsigneditoa(va_list args)
-{
-	double u; 
-	char *print_str;
-	int s; 
-	s = va_arg(args, unsigned int);
-	printf(" a%da ", s);
-	if(s < 0)
-		u = 4294967295 - -s + 1;
-	else
-		u = s;
-	//if(incoming < 0)
-	//	incoming = incoming + UINT_MAX + 1;
-	printf(" a%fa ", u);
-	print_str = f_putfnbr(u, 0);
-	return(print_str);
-}
-
 int ft_format(const char *format, char *print_str, va_list args, int *i)
 {
 	(*i)++;
@@ -313,17 +277,34 @@ int ft_format(const char *format, char *print_str, va_list args, int *i)
 	j = 0;
 	init_tagrules(&tagsrules);
 	ret_chars = ft_calloc(sizeof(char), 7);
+	
+	//if(!check_char_set(format[*i], tagsrules.ALL_SPECIFIERS));
+	//{
+	//	//printf("\n specifier now 1 %c\n" , format[*i]);
+	//	ret_chars[j] = parse_tags_preced(format, &tagsrules, args, i);
+	//	if(ret_chars[j++] == '#')
+	//		ret_chars[j] = parse_tags_preced(format, &tagsrules, args, i);
+	//	if(check_char_set('*', tagsrules.FOUND_FLAGS))
+	//		va_arg(args, int);
+	//	//printf("   %f    %c", va_arg(args, double), format[*i]);
+	//	//printf( "yes found *");
+	//	//case_preced = parse_flags_2(format, &tagsrules, args, i)
+	//}
 	specifier = parse_and_specify(format, i, &tagsrules, args);
 	if(check_char_set('*', tagsrules.FOUND_FLAGS))
 		va_arg(args, int);
+	//printf(" presisooin %d   ",  tagsrules.precision);
+	//if(specifier == -1)
+	//	return (1);
+	//printf("specify %c ",  specifier);
+	//printf("\n specifier now = %c\n" , format[*i]);
+	//printf("|found %s|", tagsrules.FOUND_FLAGS);
 	if(format[*i] == 'd')
 		print_str = ft_itoa(va_arg(args, int));
 	else if(format[*i] == 's')
 		print_str = ft_strdup(va_arg(args, char *));
 	else if(format[*i] == 'c')
 		print_str = f_char_str(args);
-	else if(format[*i] == 'u')
-		print_str = unsigneditoa(args);
 	else if(format[*i] == 'o')
 		print_str = f_nbrbase(args, 1, 8);//preceding cases
 	else if(format[*i] == 'x')
@@ -417,22 +398,22 @@ int main()
 	een = een - 0.333333;
 	twee = twee - 0.333333;
 	char test = 'a';
-	int u = -23;
+	int u = 23;
 
 
 	ft_printf("\n\ttesting: u %   u \n", u);
 	printf("O \ttesting: u %   u \n", u);
 
-	//ft_printf("\n\ttesting: .n %   .12f \n", een);
-	//printf("O \ttesting: .n %.12f \n", een);
-	//ft_printf("\ttesting: .* %  .*faaaa \n", 4, een);
-	//printf("O \ttesting: .* %  .*faaaa \n", 4, een);
+	ft_printf("\n\ttesting: .n %   .12f \n", een);
+	printf("O \ttesting: .n %.12f \n", een);
+	ft_printf("\ttesting: .* %  .*faaaa \n", 4, een);
+	printf("O \ttesting: .* %  .*faaaa \n", 4, een);
 
 	//ft_printf("\n\ttesting: %p hmmmmm\n", &een);
 	//printf("O \ttesting: %p hmmmmm\n", &een);
 
-	//ft_printf("\n\ttesting:X %  #X hmmmmm\n", een);
-	//printf("O \ttesting:X %     #X hmmmmm\n", een);
+	ft_printf("\n\ttesting:X %  #X hmmmmm\n", een);
+	printf("O \ttesting:X %     #X hmmmmm\n", een);
 
 	//ft_printf("\ttesting:x %x hmmmmm\n", een);
 	//printf("O \ttesting:x %x hmmmmm\n", een);

@@ -16,6 +16,7 @@ SRCS = ft_atoi.c \
 	  ft_memset.c \
 	  ft_putchar_fd.c \
 	  ft_strlcat.c \
+	  ft_strcat.c \
 	  ft_strchr.c \
 	  ft_strlcpy.c \
 	  ft_strlen.c \
@@ -41,7 +42,7 @@ SRCS = ft_atoi.c \
 	  ft_lstlast.c \
 	  ft_lstnew.c \
 	  ft_split.c \
-	  check_char_set.c \
+	  ft_check_char_set.c \
 	  
 
 SRCSBONUS = ft_lstnew.c \
@@ -58,31 +59,27 @@ OBJS = $(SRCS:.c=.o)
 
 OBJSBONUS = $(SRCSBONUS:.c=.o)
 
-PARALLEL ?= -j
 
 .PHONY: all clean fclean re bonus
 
 all: $(NAME)
-	$(MAKE) $(PARALLEL) $(NAME)
+	$(MAKE) $(NAME)
 
-$(NAME): $(OBJS) $(LIBFT)
+$(NAME): $(OBJS)
 		ar rc $(NAME) $(OBJS)
 		ranlib $(NAME)
-		@echo "Libft compiled"
 
 bonus:	$(OBJSBONUS)
 		ar rc $(NAME) $(OBJSBONUS)
 		@ranlib $(NAME)
 
-%.o: %.c $(LIBFT)
+%.o: %.c
 		gcc $(FLAGS) -c $< -o $@
 
 clean:
-		@/bin/rm -f $(OBJS) $(OBJSBONUS)
-		@echo "Libft cleaned"
+		rm -f $(OBJS) $(OBJSBONUS)
 
 fclean:	clean
-		@/bin/rm -f $(NAME)
-		@echo "Libft full cleaned"
+		rm -f $(NAME)
 
 re:		fclean all

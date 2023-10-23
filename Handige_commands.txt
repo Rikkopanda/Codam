@@ -1,0 +1,4 @@
+valgrind --leak-check=yes ./a.out
+
+wsl --shutdown
+wsl -l -v status van distros

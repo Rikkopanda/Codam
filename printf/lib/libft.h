@@ -33,6 +33,7 @@ char *ft_substr(char const *s, unsigned int start, size_t len);
 int ft_atoi(const char *str);
 char *ft_itoa(int n);
 void ft_putchar(char c);
+char	*ft_strcat(char *dest, char *src);
 size_t ft_strlcat(char *dst, const char *src, size_t size);
 int	ft_strcmp(const char *s1, const char *s2);
 int	ft_strncmp(const char *s1, const char *s2, unsigned int n);

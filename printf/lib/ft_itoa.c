@@ -12,7 +12,7 @@ int begin_check(int *n, int *i, char *str1)
 	{
 		str1[*i] = '-';
 		*n = *n * -1;
-		printf("char %c, i = %d\n", str1[*i], *i);
+		//printf("char %c, i = %d\n", str1[*i], *i);
 		*i = *i + 1;
 	}
 	return (0);
