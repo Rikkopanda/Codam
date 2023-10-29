@@ -1,9 +1,9 @@
 
 #ifndef GET_NEXT_LINE_H
-#define GET_NEXT_LINE_H
-#ifndef BUFF_SIZE
-#define BUFF_SIZE 1
-#endif
+# define GET_NEXT_LINE_H
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 5
+# endif
 //#include "../Libft/libft.h"
 #include "stdlib.h"
 #include "stdio.h"
@@ -15,13 +15,15 @@ typedef struct list
 	struct list *next;
 }	t_list;
 
+
+
 char *get_next_line(int fd);
 char *make_next_line(t_list **list, int size);
 int size_of_total_str(t_list **list);
 void make_new_list(t_list **list, char *after_newlinestr);
 char *ret_next_line(t_list **list);
 int size_of_total_str(t_list **list);
-void create_list(int fd, t_list **list);
+char *create_list(int fd, t_list **list);
 int find_newline(t_list *node);
 
 //Helpers

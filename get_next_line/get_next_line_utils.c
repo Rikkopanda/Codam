@@ -27,7 +27,6 @@ char	*ft_strchr(const char *s, int c)
 
 t_list *ft_lstnew_strdup(void *buffer)
 {
-	int len;
 	char *new_str;
 	char *str;
 	size_t i;
@@ -35,10 +34,14 @@ t_list *ft_lstnew_strdup(void *buffer)
 
 	i = 0;
 	str = buffer;
+	if(!buffer)// check even of alle chars /0... Mag /0's? wanneer niet
+		return (NULL);
 	while(str[i])
 		i++;
-	len = i;
-	new_str = (char *)malloc(sizeof(char) * len + 1);
+	//printf("a%s", str);
+	new_str = (char *)malloc(sizeof(char) * i + 1);
+	if(!new_str)
+		return (NULL);
 	i = 0;
 	while(str[i])
 	{
@@ -50,6 +53,7 @@ t_list *ft_lstnew_strdup(void *buffer)
 	if(!rtn)
 		return (NULL);
 	(*rtn).buffer = new_str;
+	//printf("%s", (*rtn).buffer);
 	(*rtn).next = NULL;
 	return (rtn);
 }
@@ -80,19 +84,28 @@ t_list *ft_lstlast(t_list *lst)
 void ft_lstclear(t_list **lst)
 {
 	t_list *tmp;
+	int found_newline;
 
+	found_newline = 0;
 	if (!lst || !*lst)
 		return ;
 	if (lst)
 	{
 		while (*lst)
 		{
+			if(!find_newline(*lst))
+				found_newline = 1;
 			tmp = (*lst)->next;
+			//printf("first buffer %s", tmp->buffer);
 			free((*lst)->buffer);
 			free((*lst));
 			*lst = 0;
 			*lst = tmp;
-		}
+			if(found_newline)
+				break;
+		}//*tmp van new node na node met \n wordt nu eerste node (*lst)
+		
 	}
-	lst = 0;
+	//if(left_over)
+	//	free(left_over);
 }
