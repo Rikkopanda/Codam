@@ -38,7 +38,6 @@ t_list *ft_lstnew_strdup(void *buffer)
 		return (NULL);
 	while(str[i])
 		i++;
-	//printf("a%s", str);
 	new_str = (char *)malloc(sizeof(char) * i + 1);
 	if(!new_str)
 		return (NULL);
@@ -53,7 +52,6 @@ t_list *ft_lstnew_strdup(void *buffer)
 	if(!rtn)
 		return (NULL);
 	(*rtn).buffer = new_str;
-	//printf("%s", (*rtn).buffer);
 	(*rtn).next = NULL;
 	return (rtn);
 }
@@ -77,7 +75,6 @@ t_list *ft_lstlast(t_list *lst)
 	current = lst;
 	while(current->next != NULL)
 		current = current->next;
-		
 	return (current);
 }
 
@@ -96,16 +93,16 @@ void ft_lstclear(t_list **lst)
 			if(!find_newline(*lst))
 				found_newline = 1;
 			tmp = (*lst)->next;
-			//printf("first buffer %s", tmp->buffer);
 			free((*lst)->buffer);
+			(*lst)->buffer = 0;
 			free((*lst));
 			*lst = 0;
 			*lst = tmp;
 			if(found_newline)
 				break;
 		}//*tmp van new node na node met \n wordt nu eerste node (*lst)
-		
 	}
 	//if(left_over)
 	//	free(left_over);
 }
+//printf("first buffer %s", tmp->buffer);
