@@ -1,6 +1,11 @@
 {
 	"files.associations": {
 		"libft.h": "c",
-		"sstream": "c"
+		"sstream": "c",
+		"array": "cpp",
+		"string": "cpp",
+		"string_view": "cpp",
+		"ranges": "cpp",
+		"span": "cpp"
 	}
 }

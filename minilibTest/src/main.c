@@ -1,0 +1,72 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rverhoev <rverhoev@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by you-              #+#    #+#             */
+/*   Updated: 2023/11/16 20:01:13 by rverhoev         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../libft/libft.h"
+#include <signal.h>
+#include "utils.h"
+#include "game.h"
+
+int stop_serv = 0;
+
+void sig_handler() {
+	stop_serv = 42;
+	ft_putendl_fd("Signal recieved, for now... exit without free\n", 2);
+	exit(1);
+}
+
+
+
+int main(void)
+{
+ 	t_win	mlx;
+	t_img	base_image;
+	t_img	img_bg;
+	t_img	img_monkey;
+	ptrs	ptrs;
+
+
+	ptrs.x_pos_block = 50;
+	ptrs.y_pos_block = 50;
+	ptrs.img_backgr = &img_bg;
+	ptrs.img_ptr = &img_monkey;
+	ptrs.img_base = &base_image;
+
+
+	signal(SIGINT, sig_handler);
+	mlx = new_window(1000, 650, "transparency");
+	ptrs.win_ptr = mlx.win_ptr;
+	ptrs.mlx_ptr = mlx.mlx_ptr;
+	if (!mlx.win_ptr)
+		return (2);
+	base_image = new_img(1000, 650, mlx);
+	{
+		img_bg = new_file_img("sky3.xpm", mlx);
+		if (!img_bg.img_ptr)
+			return (2);
+		put_img_to_img(base_image, img_bg, 0, 0);
+	}
+	{
+		img_monkey = new_file_img("monkey01.xpm", mlx);
+		if (!img_monkey.img_ptr)
+			return (2);
+		put_img_to_img(base_image, img_monkey, ptrs.x_pos_block, ptrs.y_pos_block);
+	}
+	//put_img_to_img(base_image, bg, 0, 0);
+	mlx_put_image_to_window (base_image.win.mlx_ptr, base_image.win.win_ptr, base_image.img_ptr, 0, 0);
+
+
+	mlx_hook(base_image.win.win_ptr, 2, 1L<<0, key_pressed, &ptrs);
+
+	mlx_loop(mlx.mlx_ptr);
+	mlx_destroy_window(mlx.mlx_ptr, mlx.win_ptr);
+	return (0);
+}
