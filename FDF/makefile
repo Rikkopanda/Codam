@@ -12,14 +12,16 @@ NAME = fdf
 
 FDF_H = fdf.h
 
-LIBA = libmlx42.a
+MLX42INCL = MLX42/include
+
+LIBA = MLX42/build/libmlx42.a
 
 LIBFT = libft/libft.a
 
 all: $(NAME)
 
 $(NAME): $(GNLOBJS) $(OBJS) $(FDF_H)
-	gcc $(GNLOBJS) $(OBJS) $(LIBA) $(LIBFT) -Iinclude -ldl -lglfw -pthread -lm -o $(NAME)
+	cc $(GNLOBJS) $(OBJS) $(LIBA) $(LIBFT) -I$(MLX42INCL) -ldl -lglfw -pthread -lm -o $(NAME)
 
 $(GNLOBJS): %.o: %.c
 		cc $(FLAGS) -c $< -o $@

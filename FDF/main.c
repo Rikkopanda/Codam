@@ -99,16 +99,15 @@ static void	draw_line(mlx_image_t *fdf, point f, point s, int color)
 	cur = f;
 	while (cur.xyz[0] != s.xyz[0] || cur.xyz[1] != s.xyz[1])
 	{
-		mlx_put_pixel(fdf, cur.xyz[0], cur.xyz[1], color);
+		if((cur.xyz[0] >= 0 && cur.xyz[1] >= 0) && (cur.xyz[0] <= WIDTH && cur.xyz[1] <= HEIGHT))
+			mlx_put_pixel(fdf, cur.xyz[0], cur.xyz[1], color);
 		if ((error[1] = error[0] * 2) > -delta.xyz[1])
 		{
-			// printf("err0 = %d\n", error[0]);
 			error[0] -= delta.xyz[1];
 			cur.xyz[0] += sign_dir.xyz[0];
 		}
 		if (error[1] < delta.xyz[0])
 		{
-			// printf("err0 = %d\n", error[0]);
 			error[0] += delta.xyz[0];
 			cur.xyz[1] += sign_dir.xyz[1];
 		}
@@ -315,7 +314,6 @@ int32_t main(int32_t argc, char* argv[])
 	printf("hoiaaaaa\n");
 	data_ptrs.mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true);
 	data_ptrs.img = mlx_new_image(data_ptrs.mlx, WIDTH, HEIGHT);
-
 	data_ptrs.t_const1 = 1;
 	data_ptrs.t_const2 = 0;
 	// translate_map(&data_ptrs.map, data_ptrs.t_const1, data_ptrs.t_const2);

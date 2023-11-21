@@ -10,23 +10,16 @@ int fill_strarr(char *next_line, char **total_arr, int fd, map_data *map )
 	while (next_line)
 	{
 		next_line = get_next_line(fd);
-		// printf(" hoi1c1 %s\n", next_line);
-        // if (next_line <= 0)
-        //     return (free_char_arr((void **)total_arr), free(next_line), 1);
 		total_arr[i] = next_line;
 		if (next_line == NULL)	
 			break;
 		map->max_width = get_points_width(next_line);
 		i++;
 	}
-	printf(" hoi1c3 i = %d\n", i);
 	if (i == 0)
 		return (free_char_arr((void **)total_arr), free(next_line), 1);
 	map->max_height = i;
-	
-	printf(" hoi1c4 \n");
 	free(next_line);
-	printf(" hoi1c5 \n");
 	return (0);
 }
 
@@ -39,17 +32,14 @@ int map_strarr(char* argv, map_data *map, char ***total_arr)
 	fd = open(argv, O_RDONLY);
 	if(fd <= 0)
 		return (1);
-	printf(" hoi1a ");
 	i = 0;
 	*total_arr = malloc(sizeof(char *) * 100);//how to free??
     if (total_arr <= 0)
         return (close(fd), free_char_arr(*(void ***)total_arr), 1);
 	next_line = (char *)1;
-	printf(" hoi1c ");
 	if (fill_strarr(next_line, *total_arr, fd, map) == 1)
 		return (close(fd), 1);
 	close(fd);
-	printf(" hoi1d \n");
 	return (0);
 }
 
@@ -60,32 +50,29 @@ typedef struct index{
 
 } i_data;
 
-int map_intarr(map_data *map, char **total_arr, i_data i)
+int map_intarr(map_data *map, char **total_arr, i_data *i)
 {
-	i.i = 0;
-	i.n = 0;
-	i.x = 0;
-	while (i < map->max_height)
+	while (i->i < map->max_height)
 	{
-
-		while (total_arr[i][n])
+		while (total_arr[i->i][i->n])
 		{
-			if (ft_isdigit(total_arr[i][n]))
+			if (ft_isdigit(total_arr[i->i][i->n]))
 			{
-				map->coords[i][x].xyz[2] = SCALE(ft_atoi(&total_arr[i][n]), 40);
-				map->coords[i][x].xyz[1] = SCALE(x, 40);
-				map->coords[i][x].xyz[0] = SCALE(i, 40);
-				x++;
-				while (ft_isdigit(total_arr[i][n]))
-					n++;
+				map->coords[i->i][i->x].xyz[2] = SCALE(ft_atoi(&total_arr[i->i][i->n]), 40);
+				map->coords[i->i][i->x].xyz[1] = SCALE(i->x, 40);
+				map->coords[i->i][i->x].xyz[0] = SCALE(i->i, 40);
+				i->x++;
+				while (ft_isdigit(total_arr[i->i][i->n]))
+					i->n++;
 			}
 			else
-				n++;
+				i->n++;
 		}
-		x = 0;
-		n = 0;
-		i++;
+		i->x = 0;
+		i->n = 0;
+		i->i++;
 	}
+	return (0);
 }
 // printf(" nbr x %d \n", map->coords[i][x - 1].xyz[0]);
 // printf(" nbr y %d \n", map->coords[i][x - 1].xyz[1]);
@@ -108,32 +95,34 @@ int alloc_intarr(map_data *map)
 	return (0);
 }
 
+void init_indexes(i_data *i)
+{
+	i->i = 0;
+	i->n = 0;
+	i->x = 0;
+}
+
 int save_map(char* argv, map_data *map)
 {
 	int i;
-
+	i_data indexes;
 	i = 0;
-	// printf("\n w %d \n", map->max_width);
-	// printf("\n h %d \n", i);
+
 	char **total_arr;
-	printf("hoi1\n");
 	if(map_strarr(argv, map, &total_arr) == 1)
 		return (1);
-	printf("hoi2\n");
-	// return (0);
-	printf("hoi4 %s \t %s\n", total_arr[0], total_arr[1]);
-
-	printf("hoi3\n");
 	alloc_intarr(map);
-	map_intarr(map, total_arr);
-
-	printf("hoi8\n");
-	free_char_arr((void **)total_arr);
 	
-	printf("hoiZ\n");
+	init_indexes(&indexes);
+	map_intarr(map, total_arr, &indexes);
+	free_char_arr((void **)total_arr);
 	assign_relative_coord(map);
 	return (0);
 }
+// printf("\n w %d \n", map->max_width);
+// printf("\n h %d \n", i);
+//printf("hoi4 %s \t %s\n", total_arr[0], total_arr[1]);
+//printf("hoi3\n");
 // i = 0;
 // while(next_line[i] != '\n' && next_line[i] != EOF)
 // {

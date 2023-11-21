@@ -5,7 +5,6 @@
 
 int handle_input(int keysym, ptrs	*data)
 {
-
     if (keysym == ON_ESCAPE)
     {
         printf("The %d key (ESC) has been pressed\n\n", keysym);
@@ -28,7 +27,6 @@ int handle_input(int keysym, ptrs	*data)
 
 int key_pressed(int keysym, ptrs	*data)
 {
-
 	data->key_pressed = keysym;
 	if (keysym == ON_KEYRIGHT)
 		move_square(data, 10, 0);

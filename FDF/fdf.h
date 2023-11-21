@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <MLX42.h>
+#include "MLX42/include/MLX42/MLX42.h"
 #include <math.h>
 #include "fcntl.h"
 #include "libft/libft.h"
