@@ -1,31 +1,35 @@
-NAME	:= Game
-CFLAGS	:= -Wunreachable-code -Ofast
-LIBMLX	:= lib/MLX42/
 
+GNLSRCS = $(wildcard gnl/*.c)
 
-HEADERS	:= -I ./include -I $(LIBMLX)/include
-LIBS	:= $(LIBMLX)/build/libmlx42.a -ldl -lglfw -pthread -lm
-SRCS	:= $(shell find ./src -iname "*.c")
-OBJS	:= ${SRCS:.c=.o}
+GNLOBJS = $(GNLSRCS:.c=.o)
 
-all: libmlx $(NAME)
+SRCS = main.c  \
+	parsing.c
 
-libmlx:
-	@cmake $(LIBMLX) -B $(LIBMLX)/build && make -C $(LIBMLX)/build -j4
+OBJS = $(SRCS:.c=.o)
 
-%.o: %.c
-	@$(CC) $(CFLAGS) -o $@ -c $< $(HEADERS) && printf "Compiling: $(notdir $<)"
+NAME = fdf
 
-$(NAME): $(OBJS)
-	@$(CC) $(OBJS) $(LIBS) $(HEADERS) -o $(NAME)
+FDF_H = fdf.h
+
+LIBA = libmlx42.a
+
+LIBFT = libft/libft.a
+
+all: $(NAME)
+
+$(NAME): $(GNLOBJS) $(OBJS) $(FDF_H)
+	gcc $(GNLOBJS) $(OBJS) $(LIBA) $(LIBFT) -Iinclude -ldl -lglfw -pthread -lm -o $(NAME)
+
+$(GNLOBJS): %.o: %.c
+		cc $(FLAGS) -c $< -o $@
+
+$(OBJS): %.o: %.c
+		cc $(FLAGS) -c $< -o $@
 
 clean:
-	@rm -rf $(OBJS)
-	@rm -rf $(LIBMLX)/build
+	rm $(GNLOBJS)
 
-fclean: clean
-	@rm -rf $(NAME)
-
-re: clean all
-
-.PHONY: all, clean, fclean, re, libmlx
+re:
+	make clean
+	make all

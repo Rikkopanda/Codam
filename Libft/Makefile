@@ -41,6 +41,8 @@ SRCS = ft_atoi.c \
 	  ft_strncat.c \
 	  ft_strcmp.c \
 	  ft_split.c \
+	#   $(wildcard printf/*.c) \
+	#   $(wildcard GNL/*.c)
 
 SRCSBONUS = ft_lstnew.c \
 	  ft_lstsize.c \
@@ -58,10 +60,10 @@ OBJSBONUS = $(SRCSBONUS:.c=.o)
 
 .PHONY: all clean fclean re bonus
 
-all: $(NAME)
+all: $(NAME) bonus
 
-$(NAME): $(OBJS) 
-		ar rcs $(NAME) $(OBJS)
+$(NAME): $(OBJS) $(OBJSBONUS)
+		ar rcs $(NAME) $(OBJS) $(OBJSBONUS)
 
 bonus:	$(OBJSBONUS)
 		ar r $(NAME) $(OBJSBONUS)

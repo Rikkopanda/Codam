@@ -30,6 +30,7 @@ void	destroy_image(t_img img) {
 	if (img.img_ptr && img.win.mlx_ptr) 
        mlx_destroy_image(img.win.mlx_ptr, img.img_ptr);
 }
+#include <stdio.h>
 
 void	put_pixel_img(t_img img, int x, int y, int color)
 {

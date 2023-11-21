@@ -23,7 +23,15 @@ void sig_handler() {
 	exit(1);
 }
 
+int putpixel(int r, int g, int b, int a)
+{
+	int ret_int;
 
+	ret_int = (r << 24 | g << 16 | b << 8 | a);
+	return (ret_int);
+}
+
+void new_resize_img(t_img original_img, double scale);
 
 int main(void)
 {
@@ -33,14 +41,12 @@ int main(void)
 	t_img	img_monkey;
 	ptrs	ptrs;
 
-
 	ptrs.x_pos_block = 50;
 	ptrs.y_pos_block = 50;
 	ptrs.img_backgr = &img_bg;
 	ptrs.img_ptr = &img_monkey;
 	ptrs.img_base = &base_image;
-
-
+	// int_ptrs(ptrs, &img_bg, &base_image, &img_monkey);
 	signal(SIGINT, sig_handler);
 	mlx = new_window(1000, 650, "transparency");
 	ptrs.win_ptr = mlx.win_ptr;
@@ -60,13 +66,14 @@ int main(void)
 			return (2);
 		put_img_to_img(base_image, img_monkey, ptrs.x_pos_block, ptrs.y_pos_block);
 	}
-	//put_img_to_img(base_image, bg, 0, 0);
 	mlx_put_image_to_window (base_image.win.mlx_ptr, base_image.win.win_ptr, base_image.img_ptr, 0, 0);
-
-
 	mlx_hook(base_image.win.win_ptr, 2, 1L<<0, key_pressed, &ptrs);
-
+	
+	
 	mlx_loop(mlx.mlx_ptr);
+	// mlx_destroy_image(mlx.mlx_ptr, img_monkey.img_ptr);
+	// mlx_destroy_image(mlx.mlx_ptr, base_image.img_ptr);
 	mlx_destroy_window(mlx.mlx_ptr, mlx.win_ptr);
 	return (0);
 }
+
