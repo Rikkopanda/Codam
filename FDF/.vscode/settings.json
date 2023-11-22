@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "math.h": "c",
-        "mlx42.h": "c",
-        "fcntl.h": "c"
-    }
-}
