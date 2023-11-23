@@ -257,18 +257,32 @@ void draw_map(ptrs *data, int color)
 	}
 }
 
-void init_R_around(double R[3][3], char axis, double rad)
+void init_R_around_Z(double R[3][3], char axis, double rad)
 {
 	(void)axis;
 	R[0][0]  = cos(rad);
-	R[0][1]  = asin(rad);
+	R[0][1]  = -1;
 	R[0][2]  = 0;
-	R[1][0]  = sin(rad);
+	R[1][0]  = 1;
 	R[1][1]  = cos(rad);
 	R[1][2]  = 0;
 	R[2][0]  = 0;
 	R[2][1]  = 0;
 	R[2][2]  = 1;
+}
+
+void init_R_around_Y(double R[3][3], char axis, double rad)
+{
+	(void)axis;
+	R[0][0]  = 0.707;
+	R[0][1]  = 0;
+	R[0][2]  = 0.707;
+	R[1][0]  = 0;
+	R[1][1]  = 1;
+	R[1][2]  = 0;
+	R[2][0]  = 0;
+	R[2][1]  = 0;
+	R[2][2]  = 0;
 }
 
 void init_result(double M[3][3])
@@ -280,6 +294,22 @@ void init_result(double M[3][3])
 	}
 }
 
+void compilation_matrix(double comp[3][3], double R[3][3], double R3[3][3])
+{
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			comp[i][j] = 0;
+		}
+	}
+
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			for (int k = 0; k < 3; ++k) {
+				comp[i][j] += R[i][k] * R3[k][j];
+			}
+		}
+	}
+}
 void translate_map(map_data *map, double val_1, double val_2)
 {
 	int j;
@@ -301,7 +331,12 @@ void translate_map(map_data *map, double val_1, double val_2)
 	m = 0;
 	double R2[2][2] = {{0,-1},{1, 0}};
 	double R[3][3];
-	init_R_around(R, 'z', DEGR_TO_RAD(90 + (int)val_2));
+	double R3[3][3];
+	double comp[3][3];
+	init_R_around_Z(R, 'z', DEGR_TO_RAD(45));
+	init_R_around_Y(R3, 'z', DEGR_TO_RAD(45));
+	compilation_matrix(comp, R, R3);
+
 	init_result(result);
 	//offset_draw(map, i, j);
 	while (i < map->max_height)
@@ -311,9 +346,9 @@ void translate_map(map_data *map, double val_1, double val_2)
 			//ffset_draw(map, i, j);
 			//offset_draw(map, i + 1, j);
 			//offset_draw(map, i, j + 1);
-			while (l < 2)
+			while (l < 3)
 			{
-				while (m < 2)
+				while (m < 3)
 				{
 //for (int i = 0; i < 3; ++i) {
 //	for (int j = 0; j < 3; ++j) {
@@ -323,9 +358,9 @@ void translate_map(map_data *map, double val_1, double val_2)
 //	}
 //}					
 					if(map->coords[i][j].origin_point_i < i)
-						result[l] += map->coords[i][j].relative_xyz[m] * R2[m][l];
+						result[l] += map->coords[i][j].relative_xyz[m] * comp[m][l];
 					else
-						result[l] += map->coords[i][j].relative_xyz[m] * R2[m][l];
+						result[l] += map->coords[i][j].relative_xyz[m] * comp[m][l];
 					m++;
 				}
 				m = 0;
@@ -411,19 +446,18 @@ int32_t main(int32_t argc, char* argv[])
 {
 	ptrs data_ptrs;
 
-
 	data_ptrs.map.start_pos_x = 120;
 	data_ptrs.map.start_pos_y = 120;
 	if(save_map(argv[1], &data_ptrs))
 		return (1);
 	// Gotta error check this stuff
-	printf("hoiaaaaa\n");
+	//printf("hoiaaaaa\n");
 	data_ptrs.mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true);
 	data_ptrs.img = mlx_new_image(data_ptrs.mlx, WIDTH, HEIGHT);
 	data_ptrs.t_const1 = 1;
 	data_ptrs.t_const2 = 0;
 	data_ptrs.pos_x = 50;
-
+	//printf("hois %i");
 	// translate_map(&data_ptrs.map, data_ptrs.t_const1, data_ptrs.t_const2);
 	draw_map(&data_ptrs, (int)blue);
 	mlx_key_hook(data_ptrs.mlx, keypressed, &data_ptrs);
