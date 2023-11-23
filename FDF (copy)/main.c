@@ -235,7 +235,7 @@ void draw_map(ptrs *data, int color)
 	j = 0;
 	// printf("aaa nbr x %d \n", map->coords[0][0].x);
 	// printf("aaa nbr y %d \n", map->coords[0][0].y);
-	draw_xy_projection(data);
+	//draw_xy_projection(data);
 	while (i < data->map.max_height)
 	{
 		while (j < data->map.max_width)
@@ -299,8 +299,9 @@ void translate_map(map_data *map, double val_1, double val_2)
 	k = 0;
 	l = 0;
 	m = 0;
+	double R2[2][2] = {{0,-1},{1, 0}};
 	double R[3][3];
-	init_R_around(R, 'z', DEGR_TO_RAD(25 + (int)val_2));
+	init_R_around(R, 'z', DEGR_TO_RAD(90 + (int)val_2));
 	init_result(result);
 	//offset_draw(map, i, j);
 	while (i < map->max_height)
@@ -310,9 +311,9 @@ void translate_map(map_data *map, double val_1, double val_2)
 			//ffset_draw(map, i, j);
 			//offset_draw(map, i + 1, j);
 			//offset_draw(map, i, j + 1);
-			while (l < 3)
+			while (l < 2)
 			{
-				while (m < 3)
+				while (m < 2)
 				{
 //for (int i = 0; i < 3; ++i) {
 //	for (int j = 0; j < 3; ++j) {
@@ -322,9 +323,9 @@ void translate_map(map_data *map, double val_1, double val_2)
 //	}
 //}					
 					if(map->coords[i][j].origin_point_i < i)
-						result[l] += map->coords[i][j].relative_xyz[m] * R[m][l];
+						result[l] += map->coords[i][j].relative_xyz[m] * R2[m][l];
 					else
-						result[l] += map->coords[i][j].relative_xyz[m] * R[m][l];
+						result[l] += map->coords[i][j].relative_xyz[m] * R2[m][l];
 					m++;
 				}
 				m = 0;
