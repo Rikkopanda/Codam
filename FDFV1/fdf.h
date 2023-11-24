@@ -2,14 +2,14 @@
 
 # define FDF_H
 
-# define HEIGHT			500
-# define WIDTH			500
+# define HEIGHT			1500
+# define WIDTH			1500
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-// #include "MLX42/include/MLX42/MLX42.h"
-#include "/usr/include/MLX42/include/MLX42/MLX42.h"
+ #include "MLX42/include/MLX42/MLX42.h"
+//#include "/usr/include/MLX42/include/MLX42/MLX42.h"
 #include <math.h>
 #include "fcntl.h"
 #include "libft/libft.h"
@@ -53,10 +53,18 @@ typedef struct m_data
 
 typedef struct v_data
 {
-	double view_angle_around_y;
-	double view_angle_around_z;
+	double rad_angle_around_y;
+	double rad_angle_around_z;
+	double rad_90dgr;
 
 } view_data;
+
+typedef struct o_data
+{
+	double rad_angle_around_y;
+	double rad_angle_around_z;
+} orient_data;
+
 
 typedef struct data{
 
@@ -64,6 +72,7 @@ typedef struct data{
 	mlx_t *mlx;
 	map_data map;
 	view_data view;
+	orient_data orientation;
 	int color;
 	double t_const1;
 	double t_const2;
@@ -103,5 +112,15 @@ int get_points_width(char *str);
 void free_char_arr(void **arr);
 
 void assign_relative_coord(ptrs *data);
+
+
+// draw Dxy
+void set_view_data(ptrs *data, double around_y_angle, double around_z_angle);
+void make_draw_Dxy(ptrs *data, int color);
+int check_img_bounds(ptrs *data, int Dx, int Dy);
+void draw_map(ptrs *data, int color);
+
+// matrix tools
+void compilation_matrix(double comp[3][3], double R[3][3], double R3[3][3]);
 
 #endif

@@ -45,8 +45,8 @@ int map_strarr(char* argv, map_data *map, char ***total_arr)
 
 typedef struct index{
 	int i;
+	int j;
 	int n;
-	int x;
 
 } i_data;
 
@@ -58,20 +58,20 @@ int map_intarr(map_data *map, char **total_arr, i_data *i)
 		{
 			if (ft_isdigit(total_arr[i->i][i->n]) || total_arr[i->i][i->n] == '-')//error handle still
 			{
-				map->coords[i->i][i->x].xyz[2] = SCALE(ft_atoi(&total_arr[i->i][i->n]), 40);
-				printf("assign height %d\n\n", ft_atoi(&total_arr[i->i][i->n]));
-				map->coords[i->i][i->x].xyz[1] = SCALE(i->x, 40);
-				map->coords[i->i][i->x].xyz[0] = SCALE(i->i, 40);
+				map->coords[i->i][i->j].xyz[2] = SCALE(ft_atoi(&total_arr[i->i][i->n]), 10);
+				//printf("assign height %d\n\n", ft_atoi(&total_arr[i->i][i->n]));
+				map->coords[i->i][i->j].xyz[1] = SCALE(i->i, 10);
+				map->coords[i->i][i->j].xyz[0] = SCALE(i->j, 10);
 				if(total_arr[i->i][i->n] == '-')
 					i->n++;
-				i->x++;
+				i->j++;
 				while (ft_isdigit(total_arr[i->i][i->n]))
 					i->n++;
 			}
 			else
 				i->n++;
 		}
-		i->x = 0;
+		i->j = 0;
 		i->n = 0;
 		i->i++;
 	}
@@ -102,7 +102,7 @@ void init_indexes(i_data *i)
 {
 	i->i = 0;
 	i->n = 0;
-	i->x = 0;
+	i->j = 0;
 }
 
 int save_map(char* argv, ptrs *data)
