@@ -1,37 +1,34 @@
 
-#include "pushswap.h"
-
-// int gemalloced;
-// int gefreeed;
+#include "../include/pushswap.h"
 
 int main(int argc, char **argv)
 {
-	element *elementnode_a;
+	element *node_a;
+	int list_size;
 
-	elementnode_a = NULL;
-	char **list_elements;
-	int nbr_instructs;
-	// gemalloced = 0;
-	// gefreeed = 0;
-	if(argc == 1)
+	node_a = NULL;
+	if (argc == 1)
 		return (1);
-	// printf("instr");
-	if(ft_strchr(argv[1], ' ') != NULL && argc == 2)
+	if (ft_strchr(argv[1], ' ') != NULL && argc == 2)
 	{
-		list_elements = ft_split(argv[1], ' ');
-		fill_list(&elementnode_a, list_elements, chr_arr_size(list_elements));
-		free_chrarr(list_elements);
+		argv = ft_split(argv[1], ' ');
 	}
 	else
-		fill_list(&elementnode_a, &argv[1], argc - 1);
-	// printf("hello2");
-	if(elementnode_a == NULL)
+		argv = &argv[1];
+	// printf("%s\n", argv[1]);
+	// argv[argc - 1] = NULL;
+	fill_list(&node_a, argv, chr_arr_size(argv));
+	// printf("%s\n", argv[1]);
+	if (node_a == NULL)
 		return (1);
-	// printf("hello3");
-	// print_lst(&elementnode_a);
-	nbr_instructs = sort_list(&elementnode_a, ps_lstsize(&elementnode_a));
-	print_lst(&elementnode_a);
-	// printf("instructs: %d wat is pointer a: %p", nbr_instructs, elementnode_a);
-	// printf("\n\nmallocs: %d", gemalloced);
-	ps_lstclear(&elementnode_a);
+	// print_lst(&node_a);
+	// print_lst_debug(&node_a);
+
+	sort_list(&node_a, ps_lstsize(&node_a));
+	// printf(" hello ");
+	// print_lst(&node_a);
+	// printf("%s\n", argv[1]);
+	// printf("%d\n", node_a->stack_info->nbr_of_instructs);
+	ps_lstclear(&node_a);
 }
+

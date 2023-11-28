@@ -271,7 +271,7 @@ int main(int argc, char **argv)
 	total[0] = '\0';
 	while(next_line != NULL)
 	{	
-		next_line = get_next_line(fd);
+		next_line = get_next_line(0);
 		if(next_line != NULL)
 		{
 			putstr(next_line);
