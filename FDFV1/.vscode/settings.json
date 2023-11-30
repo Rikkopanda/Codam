@@ -11,7 +11,8 @@
         "string_view": "c",
         "ranges": "c",
         "span": "c",
-        "type_traits": "c"
+        "type_traits": "c",
+        "algorithm": "c"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

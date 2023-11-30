@@ -40,6 +40,11 @@ typedef struct coord {
 	int **right_point_i;
 	int **down_point_i;
 	int **up_point_i;
+	int color;
+	int r;
+	int g;
+	int b;
+	int a;
 } point ;
 
 typedef struct m_data
@@ -48,6 +53,7 @@ typedef struct m_data
 	int max_height;
 	int start_pos_x;
 	int start_pos_y;
+	bool rgba_in_map_1_or_0;
 	point **coords;
 } map_data;
 
@@ -65,6 +71,18 @@ typedef struct o_data
 	double rad_angle_around_z;
 } orient_data;
 
+typedef struct d_l_data
+{
+	int curr_line_steps;
+	int		error[2];
+	int		draw_color;
+	point	delta;
+	point	sign_dir;
+	point	cur;
+
+}	curr_line_draw_data;
+
+
 
 typedef struct data{
 
@@ -73,6 +91,7 @@ typedef struct data{
 	map_data map;
 	view_data view;
 	orient_data orientation;
+	curr_line_draw_data dr_data;
 	int color;
 	double t_const1;
 	double t_const2;
@@ -83,8 +102,8 @@ typedef struct data{
 
 
 enum {
-	ON_KEYDOWN = 65362,
-	ON_KEYUP = 65364,
+	ON_KEYDOWN = 264,
+	ON_KEYUP = 263,
 	ON_KEYRIGHT = 263,
 	ON_KEYLEFT = 262,
 	ON_MOUSEDOWN = 4,
@@ -116,11 +135,17 @@ void assign_relative_coord(ptrs *data);
 
 // draw Dxy
 void set_view_data(ptrs *data, double around_y_angle, double around_z_angle);
-void make_draw_Dxy(ptrs *data, int color);
+void make_draw_Dxy(ptrs *data);
 int check_img_bounds(ptrs *data, int Dx, int Dy);
-void draw_map(ptrs *data, int color);
+void draw_map(ptrs *data);
 
 // matrix tools
 void compilation_matrix(double comp[3][3], double R[3][3], double R3[3][3]);
+double vector_len(map_data *map, int i, int j);
+
+// tools
+void clear_img(mlx_image_t *img, int width, int height);
+void init_rgbs(point *A);
+int32_t ft_pixel_rgba(int32_t r, int32_t g, int32_t b, int32_t a);
 
 #endif

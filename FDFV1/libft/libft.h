@@ -93,5 +93,9 @@ t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 t_list	*ft_lstnew(void *content);
 t_list	*ft_lstlast(t_list *lst);
 
+//			Bases
+void	ft_putnbr_base(int nbr, char *base);
+int	ft_atoi_base(char *str, char *base);
+unsigned int	ft_uint_atoi_base(char *str, char *base);
 
 #endif

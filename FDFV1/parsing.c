@@ -33,7 +33,7 @@ int map_strarr(char* argv, map_data *map, char ***total_arr)
 	if(fd <= 0)
 		return (1);
 	i = 0;
-	*total_arr = malloc(sizeof(char *) * 100);//how to free??
+	*total_arr = malloc(sizeof(char *) * 200000);//how to free??
     if (total_arr <= 0)
         return (close(fd), free_char_arr(*(void ***)total_arr), 1);
 	next_line = (char *)1;
@@ -50,6 +50,33 @@ typedef struct index{
 
 } i_data;
 
+int	fdf_ischar(char str_chr, char check)
+{
+	if (str_chr == check)
+		return (1);
+	return (0);
+}
+
+int parse_color(char *str)
+{
+	char *color_str;
+	uint32_t color;
+
+	color_str = ft_substr(str, 0, 8);
+	color = ft_uint_atoi_base(color_str, "0123456789abcdef");
+	printf("\n----%d----%s-----\n", color, color_str);
+	free(color_str);
+	color_str = 0;
+	return (color);
+}
+
+int is_nul_or_eof(int c)
+{
+	if (c == EOF || c == '\0')
+		return (1);
+	return (0);
+}
+
 int map_intarr(map_data *map, char **total_arr, i_data *i)
 {
 	while (i->i < map->max_height)
@@ -58,15 +85,19 @@ int map_intarr(map_data *map, char **total_arr, i_data *i)
 		{
 			if (ft_isdigit(total_arr[i->i][i->n]) || total_arr[i->i][i->n] == '-')//error handle still
 			{
-				map->coords[i->i][i->j].xyz[2] = SCALE(ft_atoi(&total_arr[i->i][i->n]), 10);
-				//printf("assign height %d\n\n", ft_atoi(&total_arr[i->i][i->n]));
-				map->coords[i->i][i->j].xyz[1] = SCALE(i->i, 10);
-				map->coords[i->i][i->j].xyz[0] = SCALE(i->j, 10);
+				map->coords[i->i][i->j].xyz[2] = SCALE(ft_atoi(&total_arr[i->i][i->n]), 100);
+				map->coords[i->i][i->j].xyz[1] = SCALE(i->i, 100);
+				map->coords[i->i][i->j].xyz[0] = SCALE(i->j, 100);
 				if(total_arr[i->i][i->n] == '-')
 					i->n++;
-				i->j++;
-				while (ft_isdigit(total_arr[i->i][i->n]))
+				while(ft_isdigit(total_arr[i->i][i->n]))
 					i->n++;
+				i->n++;
+				map->coords[i->i][i->j].color = parse_color(&total_arr[i->i][i->n + 2]);
+				init_rgbs(&map->coords[i->i][i->j]);
+				while (!fdf_ischar(total_arr[i->i][i->n], ' ') && !is_nul_or_eof(total_arr[i->i][i->n]))
+					i->n++;
+				i->j++;
 			}
 			else
 				i->n++;
@@ -75,8 +106,10 @@ int map_intarr(map_data *map, char **total_arr, i_data *i)
 		i->n = 0;
 		i->i++;
 	}
+	//printf("hoi4a\n");
 	return (0);
 }
+
 // printf(" nbr x %d \n", map->coords[i][x - 1].xyz[0]);
 // printf(" nbr y %d \n", map->coords[i][x - 1].xyz[1]);
 // printf("hoi4a\n");
@@ -149,7 +182,8 @@ int get_points_width(char *str)
 			while(ft_isdigit(str[i]))
 				i++;
 				// printf("hello");
-			points++;
+			if(str[i] == ',')
+				points++;
 			if (!str[i])
 				return (points);
 		}

@@ -41,6 +41,10 @@ SRCS = ft_atoi.c \
 	  ft_strncat.c \
 	  ft_strcmp.c \
 	  ft_split.c \
+	  ft_atoi_base.c \
+	  ft_uint_atoi_base.c \
+	  ft_putnbr_base.c
+	  
 
 SRCSBONUS = ft_lstnew.c \
 	  ft_lstsize.c \

@@ -9,44 +9,6 @@ static mlx_image_t* image;
 
 // -----------------------------------------------------------------------------
 
-int32_t ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a)
-{
-    return (r << 24 | g << 16 | b << 8 | a);
-}
-
-void ft_randomize(void* param)
-{
-	for (int32_t i = 0; i < image->width; ++i)
-	{
-		for (int32_t y = 0; y < image->height; ++y)
-		{
-			uint32_t color = ft_pixel(
-				rand() % 0xFF, // R
-				rand() % 0xFF, // G
-				rand() % 0xFF, // B
-				rand() % 0xFF  // A
-			);
-			mlx_put_pixel(image, i, y, color);
-		}
-	}
-}
-
-void ft_hook(void* param)
-{
-	mlx_t* mlx = param;
-
-	if (mlx_is_key_down(mlx, MLX_KEY_ESCAPE))
-		mlx_close_window(mlx);
-	if (mlx_is_key_down(mlx, MLX_KEY_UP))
-		image->instances[0].y -= 5;
-	if (mlx_is_key_down(mlx, MLX_KEY_DOWN))
-		image->instances[0].y += 5;
-	if (mlx_is_key_down(mlx, MLX_KEY_LEFT))
-		image->instances[0].x -= 5;
-	if (mlx_is_key_down(mlx, MLX_KEY_RIGHT))
-		image->instances[0].x += 5;
-}
-
 // -----------------------------------------------------------------------------
 
 void write_error()
@@ -287,8 +249,8 @@ void keypressed(mlx_key_data_t key_data, void *data_ptrs)
 
 	static double t_const1 = 0;
 	static double t_const2 = 0;
-	printf("key pressed = %d \n", key_data.key);
-	printf("value %f\n\n", data->view.rad_angle_around_z);
+	//printf("key pressed = %d \n", key_data.key);
+	//printf("value %f\n\n", data->view.rad_angle_around_z);
 	int startpos_x;
 	int startpos_y;
 	startpos_x = 0;
@@ -303,32 +265,33 @@ void keypressed(mlx_key_data_t key_data, void *data_ptrs)
 		startpos_y = 10;
 	else if (key_data.key == ON_KEYRIGHT)
 	{
-		make_draw_Dxy(data, (int)black);
+		//mlx_delete_image(data->mlx,data->img);
 		//data->orientation.rad_angle_around_z += DEGR_TO_RAD(90);
 		//data->orientation.rad_angle_around_y -= DEGR_TO_RAD(90);
-		//data->view.rad_angle_around_y -= DEGR_TO_RAD(10);
+		//clear_img(data->img, WIDTH, HEIGHT);
 		data->view.rad_angle_around_y -= DEGR_TO_RAD(10);
-		printf("value %f\n\n", data->view.rad_angle_around_z);
+		//data->view.rad_angle_around_z -= DEGR_TO_RAD(10);
+		//printf("value after %f\n\n", data->view.rad_angle_around_z);
 		//printf("valu");
-	}	
+	}
 	else if (key_data.key == ON_KEYLEFT)
 	{
-		make_draw_Dxy(data, (int)black);
-		//data->view.rad_angle_around_y -= DEGR_TO_RAD(10);
+		//mlx_delete_image(data->mlx,data->img);
 		data->view.rad_angle_around_y += DEGR_TO_RAD(10);
-		//data->orientation.rad_angle_around_z -= DEGR_TO_RAD(90);
-		//data->orientation.rad_angle_around_y += DEGR_TO_RAD(90);
-		printf("value %f\n\n", data->view.rad_angle_around_z);
+		//data->view.rad_angle_around_z += DEGR_TO_RAD(10);
+		//data->orientation.rad_angle_around_z += DEGR_TO_RAD(10);
+		//data->orientation.rad_angle_around_y += DEGR_TO_RAD(10);
+		//printf("value after %f\n\n", data->view.rad_angle_around_z);
 		//printf("valu");
 	}
 	else
 		return ;
-	make_draw_Dxy(data, (int)black);
+	clear_img(data->img, WIDTH, HEIGHT);
 	//if((key_data.key == ON_KEYRIGHT || (key_data.key == ON_KEYLEFT)))
 	//	translate_map(&data->map, data);
 	new_start_Dxy((ptrs *)data_ptrs, startpos_x, startpos_y);
 	//set_view_data(data, 45, 45);
-	make_draw_Dxy(data, (int)white);
+	make_draw_Dxy(data);
 	//printf("1 = %d  2 = %d\n", data->pos_x, data->pos_y);
 	//mlx_image_to_window(data->mlx, data->img, data->pos_x, data->pos_y);
 }
@@ -358,7 +321,7 @@ int32_t main(int32_t argc, char* argv[])
 	if(save_map(argv[1], &data_ptrs))
 		return (1);
 	// Gotta error check this stuff
-	//printf("hoiaaaaa\n");
+	printf("hoiaaaaa\n");
 	data_ptrs.mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true);
 	data_ptrs.img = mlx_new_image(data_ptrs.mlx, WIDTH, HEIGHT);
 	data_ptrs.t_const1 = 1;
@@ -368,13 +331,13 @@ int32_t main(int32_t argc, char* argv[])
 	init_orientation(&data_ptrs, 0, 0);
 	//printf("hois %i");
 	// translate_map(&data_ptrs.map, data_ptrs.t_const1, data_ptrs.t_const2);
-	make_draw_Dxy(&data_ptrs, (int)white);
+	make_draw_Dxy(&data_ptrs);
 	//draw_map(&data_ptrs, (int)white);
 	mlx_key_hook(data_ptrs.mlx, keypressed, &data_ptrs);
 	mlx_image_to_window(data_ptrs.mlx, data_ptrs.img, 50, 50);
 	mlx_loop(data_ptrs.mlx);
 	// // mlx_delete_image(mlx, img);
 	mlx_terminate(data_ptrs.mlx);
-	// free_map(&data_ptrs);
+	free_map(&data_ptrs);
 	return (EXIT_SUCCESS);
 }

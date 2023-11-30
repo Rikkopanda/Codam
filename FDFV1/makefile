@@ -4,9 +4,10 @@ GNLSRCS = $(wildcard gnl/*.c)
 GNLOBJS = $(GNLSRCS:.c=.o)
 
 SRCS = main.c  \
-	parsing.c \
+	parsing_copy.c \
 	draw_view.c \
 	matrix_tools.c \
+	tools.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -29,6 +30,7 @@ LIBFT = libft/libft.a
 all:
 
 $(NAME): $(GNLOBJS) $(OBJS) $(FDF_H)
+	make -C libft/
 	cc $(GNLOBJS) $(OBJS) $(FLAGS) $(LIBA) $(LIBFT) -I$(MLX42INCL) -ldl -lglfw -pthread -lm -o $(NAME)
 
 $(NAME2): $(GNLOBJS) $(OBJS) $(FDF_H)
