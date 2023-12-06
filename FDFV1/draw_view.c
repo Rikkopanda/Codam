@@ -1,9 +1,9 @@
 
 #include "fdf.h"
 
-
-void set_view_data(ptrs *data, double around_y_angle, double around_z_angle)
+void set_view_data(ptrs *data, double around_y_angle, double around_z_angle, double around_x_angle)
 {
+	data->view.rad_angle_around_x = DEGR_TO_RAD(around_x_angle);
     data->view.rad_angle_around_y = DEGR_TO_RAD(around_y_angle);
 	data->view.rad_angle_around_z = DEGR_TO_RAD(around_z_angle);
 	data->view.rad_90dgr = DEGR_TO_RAD(90);
@@ -11,30 +11,37 @@ void set_view_data(ptrs *data, double around_y_angle, double around_z_angle)
 
 void set_Dxy(ptrs *data, int i, int j)
 {
-	data->map.coords[i][j].Dxy[0] = data->map.coords[i][j].xyz[0] * sin(data->view.rad_angle_around_z);
-	data->map.coords[i][j].Dxy[0] -= data->map.coords[i][j].xyz[1] * sin(data->view.rad_angle_around_z);
+	data->map.coords[i][j].Dxy[0] = data->map.coords[i][j].world_xyz[0] * cos(data->view.rad_angle_around_z);
+	data->map.coords[i][j].Dxy[0] += data->map.coords[i][j].world_xyz[1] * sin(data->view.rad_angle_around_z);
 
-	data->map.coords[i][j].Dxy[1] = -data->map.coords[i][j].xyz[2] * sin(data->view.rad_angle_around_z);
-	data->map.coords[i][j].Dxy[1] += data->map.coords[i][j].xyz[1] * sin(data->view.rad_90dgr - data->view.rad_angle_around_z);
+	data->map.coords[i][j].Dxy[1] = data->map.coords[i][j].world_xyz[0] * -sin(data->view.rad_angle_around_z);
+	data->map.coords[i][j].Dxy[1] += data->map.coords[i][j].world_xyz[1] * cos(data->view.rad_angle_around_z);
 
-	data->map.coords[i][j].Dxy[1] += data->map.coords[i][j].xyz[0] * sin(data->view.rad_angle_around_y);
-	data->map.coords[i][j].Dxy[1] -= data->map.coords[i][j].xyz[1] * sin(data->view.rad_angle_around_y);
+	// data->map.coords[i][j].Dxy[1] += -data->map.coords[i][j].world_xyz[2] * sin(data->view.rad_angle_around_y);
+	// data->map.coords[i][j].Dxy[1] += data->map.coords[i][j].world_xyz[1] * sin(data->view.rad_angle_around_y);
+	// p->Dxy[1] += -p->world_xyz[2] * sin(data->view.rad_angle_around_y);
+	// p->Dxy[1] += p->world_xyz[1] * sin(data->view.rad_angle_around_y);
+	// - data->view.rad_angle_around_z
+	// data->map.coords[i][j].Dxy[1] += data->map.coords[i][j].xyz[0] * sin(data->view.rad_angle_around_y);
+	// data->map.coords[i][j].Dxy[1] -= data->map.coords[i][j].xyz[1] * sin(data->view.rad_angle_around_y);
 
 	//printf("\ni j = %d %d,  xyz = (%d,%d,%d) Dxy = (%d,%d)\n", i, j, data->map.coords[i][j].xyz[0], 
 	//	data->map.coords[i][j].xyz[1], data->map.coords[i][j].xyz[2], data->map.coords[i][j].Dxy[0]
 	//	, data->map.coords[i][j].Dxy[1]); 
 }
-void project_2d(ptrs *data)
+void build_Wxyz_project_Dxy(ptrs *data)
 {
 	int i;
 	int j;
 	double dgr_90_rad = DEGR_TO_RAD(90);
+
 	i = 0;
 	j = 0;
 	while(i < data->map.max_height)
 	{
 		while(j < data->map.max_width)
 		{
+			offset_model_coord(data, &data->map.coords[i][j]);
 			set_Dxy(data, i, j);
 			j++;
 		}
@@ -47,7 +54,7 @@ void make_draw_Dxy(ptrs *data)
 {
     //set points on right position
     //draw connecting points
-	project_2d(data);
+	build_Wxyz_project_Dxy(data);
 	draw_map(data);
 	//draw_2d_projection(data);
 }
@@ -57,8 +64,8 @@ int check_img_bounds(ptrs *data, int Dx, int Dy)
 	int Dx_offset;
 	int Dy_offset;
 	//printf("hoi 1\n");
-	Dx_offset = data->map.start_pos_x;
-	Dy_offset = data->map.start_pos_y;
+	Dx_offset = data->map.world_pos_Dxy[0];
+	Dy_offset = data->map.world_pos_Dxy[1];
 	if((Dx + Dx_offset >= 0 && Dy + Dy_offset >= 0) && (Dx + Dx_offset <= WIDTH && Dy + Dy_offset <= HEIGHT))
 		return (0);
 	//printf("put wel\n");
@@ -163,8 +170,8 @@ void	draw_line(ptrs *data, point f, point s)
 		//fdf_put_pixel(data, data->dr_data.cur.Dxy[0], data->dr_data.cur.Dxy[0], 1);
 		if(check_img_bounds(data, data->dr_data.cur.Dxy[0], data->dr_data.cur.Dxy[1]) == 0)
 			mlx_put_pixel(data->img, data->dr_data.cur.Dxy[0]
-				+ data->map.start_pos_x, data->dr_data.cur.Dxy[1]
-					+ data->map.start_pos_y, data->dr_data.draw_color);
+				+ data->map.world_pos_Dxy[0], data->dr_data.cur.Dxy[1]
+					+ data->map.world_pos_Dxy[1], data->dr_data.draw_color);
 		//printf("error[0] = %d [1] = %d\n", error[1], error[0]);
 		if ((data->dr_data.error[1] = data->dr_data.error[0] * 2) > -data->dr_data.delta.Dxy[1])
 		{
@@ -179,6 +186,29 @@ void	draw_line(ptrs *data, point f, point s)
 		count++;
 	}
 	//printf("total count %d, D_len  \n", count);
+}
+
+void set_axes_Dxy(ptrs *data, point *p)
+{
+	p->Dxy[0] = p->world_xyz[0] * cos(data->view.rad_angle_around_z);
+	p->Dxy[0] += p->world_xyz[1] * sin(data->view.rad_angle_around_z);
+
+	p->Dxy[1] = p->world_xyz[0] * -sin(data->view.rad_angle_around_z);
+	p->Dxy[1] += p->world_xyz[1] * cos(data->view.rad_angle_around_z);
+
+	// p->Dxy[1] += -p->world_xyz[2] * sin(data->view.rad_angle_around_y);
+	// p->Dxy[1] += p->world_xyz[1] * sin(data->view.rad_angle_around_y);
+}
+
+void draw_axes(ptrs *data)
+{
+	set_axes_Dxy(data, &data->map.world_axes_oxyz[0]);
+	set_axes_Dxy(data, &data->map.world_axes_oxyz[1]);
+	set_axes_Dxy(data, &data->map.world_axes_oxyz[2]);
+	set_axes_Dxy(data, &data->map.world_axes_oxyz[3]);
+	draw_line(data, data->map.world_axes_oxyz[0], data->map.world_axes_oxyz[1]);
+	draw_line(data, data->map.world_axes_oxyz[0], data->map.world_axes_oxyz[2]);
+	draw_line(data, data->map.world_axes_oxyz[0], data->map.world_axes_oxyz[3]);
 }
 
 void draw_map(ptrs *data)

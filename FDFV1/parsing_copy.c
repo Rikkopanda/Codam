@@ -37,7 +37,7 @@ int map_strarr(char* argv, map_data *map, char ***total_arr)
 	if(fd <= 0)
 		return (1);
 	i = 0;
-	*total_arr = malloc(sizeof(char *) * 200000);//how to free??
+	*total_arr = malloc(sizeof(char *) * 400000);//how to free??
     if (total_arr <= 0)
         return (close(fd), free_char_arr(*(void ***)total_arr), 1);
 	next_line = (char *)1;
@@ -46,13 +46,6 @@ int map_strarr(char* argv, map_data *map, char ***total_arr)
 	close(fd);
 	return (0);
 }
-
-typedef struct index{
-	int i;
-	int j;
-	int n;
-
-} i_data;
 
 int	fdf_ischar(char str_chr, char check)
 {
@@ -81,14 +74,8 @@ int is_nul_or_eof(int c)
 	return (0);
 }
 
-
 int basic_map_coloring(point *cur_point)
 {
-	//int r = 255;
-	//int g = 255;
-	//int b = 255;
-	//int a = 255;
-
 	if(cur_point->xyz[2] == 0)
 		cur_point->color = (int)white;
 	else
@@ -96,75 +83,12 @@ int basic_map_coloring(point *cur_point)
 	init_rgbs(cur_point);
 	return (0);
 }
-int map_intarr_xyz(map_data *map, char **total_arr, i_data *i)
-{
-	while (i->i < map->max_height)
-	{
-		while (total_arr[i->i][i->n])
-		{
-			if (ft_isdigit(total_arr[i->i][i->n]) || total_arr[i->i][i->n] == '-')//error handle still
-			{
-				//printf("helloooo1 i=%d j=%d\n", i->i, i->j);
-				if(i->j == 18)
-					break ;
-				map->coords[i->i][i->j].xyz[2] = SCALE(ft_atoi(&total_arr[i->i][i->n]), 10);
-				map->coords[i->i][i->j].xyz[1] = SCALE(i->i, 10);
-				map->coords[i->i][i->j].xyz[0] = SCALE(i->j, 10);
-				if(total_arr[i->i][i->n] == '-')
-					i->n++;
-				while(ft_isdigit(total_arr[i->i][i->n]))
-					i->n++;
-				basic_map_coloring(&map->coords[i->i][i->j]);
-				i->j++;
-			}
-			else
-				i->n++;
-		}
-		i->j = 0;
-		i->n = 0;
-		i->i++;
-	}
-	//printf("hoi4a\n");
-	return (0);
-}
-
-int map_intarr_xyz_rgba(map_data *map, char **total_arr, i_data *i)
-{
-	while (i->i < map->max_height)
-	{
-		while (total_arr[i->i][i->n])
-		{
-			if (ft_isdigit(total_arr[i->i][i->n]) || total_arr[i->i][i->n] == '-')//error handle still
-			{
-				map->coords[i->i][i->j].xyz[2] = SCALE(ft_atoi(&total_arr[i->i][i->n]), 100);
-				map->coords[i->i][i->j].xyz[1] = SCALE(i->i, 100);
-				map->coords[i->i][i->j].xyz[0] = SCALE(i->j, 100);
-				if(total_arr[i->i][i->n] == '-')
-					i->n++;
-				while(ft_isdigit(total_arr[i->i][i->n]))
-					i->n++;
-				i->n++;
-				map->coords[i->i][i->j].color = parse_color(&total_arr[i->i][i->n + 2]);
-				init_rgbs(&map->coords[i->i][i->j]);
-				while (!fdf_ischar(total_arr[i->i][i->n], ' ') && !is_nul_or_eof(total_arr[i->i][i->n]))
-					i->n++;
-				i->j++;
-			}
-			else
-				i->n++;
-		}
-		i->j = 0;
-		i->n = 0;
-		i->i++;
-	}
-	return (0);
-}
 
 // printf(" nbr x %d \n", map->coords[i][x - 1].xyz[0]);
 // printf(" nbr y %d \n", map->coords[i][x - 1].xyz[1]);
 // printf("hoi4a\n");
 
-int alloc_intarr(map_data *map)
+int alloc_pointarr(map_data *map)
 {
 	int j;
 
@@ -205,18 +129,62 @@ void build_int_map(ptrs *data, char **total_arr)
 		map_intarr_xyz(&data->map, total_arr, &indexes);
 	}
 }
+
+void set_point_vals(point *p, int xyz[3])
+{
+	p->world_xyz[0] = xyz[0];
+	p->world_xyz[1] = xyz[1];
+	p->world_xyz[2] = xyz[2];
+}
+
+void make_world_axes(ptrs *data)
+{
+	set_point_vals(&data->map.world_axes_oxyz[0], (int[3]){0, 0, 0});
+	set_point_vals(&data->map.world_axes_oxyz[1], (int[3]){1000, 0, 0});
+	set_point_vals(&data->map.world_axes_oxyz[2], (int[3]){0, 1000, 0});
+	set_point_vals(&data->map.world_axes_oxyz[3], (int[3]){0, 0, 1000});
+}
+
+void offset_model_coord(ptrs *data, point *p)
+{
+	p->world_xyz[0] = p->xyz[0] + data->map.model_in_world_pos_xyz[0];
+	p->world_xyz[1] = p->xyz[1] + data->map.model_in_world_pos_xyz[1];
+	p->world_xyz[2] = p->xyz[2] + data->map.model_in_world_pos_xyz[2];
+}
+
+void place_model_in_world(ptrs *data)
+{
+	int i;
+	int j;
+
+	i = 0;
+	j = 0;
+	while (i < data->map.max_height)
+	{
+		while (j < data->map.max_width)
+		{
+			offset_model_coord(data, &data->map.coords[i][j]);
+			j++;
+		}
+		j = 0;
+		i++;
+	}
+}
+
 int save_map(char* argv, ptrs *data)
 {
 	int i;
 	char **total_arr;
 
+	make_world_axes(data);
 	i = 0;
 	if(map_strarr(argv, &data->map, &total_arr) == 1)
 		return (1);
-	alloc_intarr(&data->map);
+	alloc_pointarr(&data->map);
 	build_int_map(data, total_arr);
 	free_char_arr((void **)total_arr);
-	assign_relative_coord(data);
+	assign_relative_coords(data);
+	place_model_in_world(data);
 	return (0);
 }
 

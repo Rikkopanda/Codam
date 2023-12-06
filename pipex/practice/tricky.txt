@@ -1,0 +1,36 @@
+main procces (pid) 179932
+Parent pid = 179932
+Child pid proccess ended = 179933
+read 18 bytes from the pipe: "hello..sample data"
+main procces (pid) 179941
+Parent pid = 179941
+Child pid proccess ended = 179942
+read 18 bytes from the pipe: "hello..sample data"
+main procces (pid) 179972
+Parent pid = 179972
+Child pid proccess ended = 179974
+read 18 bytes from the pipe: "hello..sample data"
+main procces (pid) 179975
+Parent pid = 179975
+Child pid proccess ended = 179978
+read 18 bytes from the pipe: "hello..sample data"
+main procces (pid) 180102
+Parent pid = 180102
+Child pid proccess ended = 180103
+read 18 bytes from the pipe: "hello..sample data"
+main procces (pid) 180117
+Parent pid = 180117
+Child pid proccess ended = 180118
+read 18 bytes from the pipe: "hello..sample data"
+main procces (pid) 180136
+Parent pid = 180136
+Child pid proccess ended = 180137
+read 18 bytes from the pipe: "hello..sample data"
+main procces (pid) 180139
+Parent pid = 180139
+Child pid proccess ended = 180140
+read 18 bytes from the pipe: "hello..sample data"
+main procces (pid) 180142
+Parent pid = 180142
+Child pid proccess ended = 180143
+read 18 bytes from the pipe: "hello..sample data"

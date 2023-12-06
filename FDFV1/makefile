@@ -7,7 +7,11 @@ SRCS = main.c  \
 	parsing_copy.c \
 	draw_view.c \
 	matrix_tools.c \
-	tools.c
+	tools.c \
+	hooks.c \
+	build_map.c \
+	build_model.c \
+	transform_model.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -27,7 +31,7 @@ LIBAHOME = /usr/include/MLX42/build/libmlx42.a
 
 LIBFT = libft/libft.a
 
-all:
+all: $(NAME)
 
 $(NAME): $(GNLOBJS) $(OBJS) $(FDF_H)
 	make -C libft/

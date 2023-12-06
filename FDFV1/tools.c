@@ -26,7 +26,7 @@ void init_rgbs(point *A)
 	A->r = (A->color >> 24) & 255;
 	A->g = (A->color >> 16) & 255;
 	A->b = (A->color >> 8) & 255;
-	printf("color: %u. RGB = %d, %d, %d\n", A->color, A->r, A->g, A->b);
+	// printf("color: %u. RGB = %d, %d, %d\n", A->color, A->r, A->g, A->b);
 }
 
 

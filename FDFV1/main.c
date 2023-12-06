@@ -23,61 +23,6 @@ int end_of_line(char c)
 	return (0);
 }
 
-void assign_relative_coord(ptrs *data)
-{
-	int i;
-	int j;
-
-	i = 0;
-	j = 0;
-	data->map.coords[i][j].relative_xyz[0] = 0;
-	data->map.coords[i][j].relative_xyz[1] = 0;
-	data->map.coords[i][j].relative_xyz[2] = 0;
-	data->map.coords[i][j].origin_point_i = 0;
-	data->map.coords[i][j].origin_point_j = 0;
-	while (i < data->map.max_height)
-	{
-		while (j < data->map.max_width)
-		{
-			point A;
-			point B;
-			point C;
-			point D;
-
-			A = data->map.coords[i][j];
-			if(j != data->map.max_width - 1)
-				B = data->map.coords[i][j + 1];
-			if(i != data->map.max_height - 1)
-				C = data->map.coords[i + 1][j];
-			if(j != data->map.max_width - 1)
-			{
-				B.relative_xyz[0] = B.xyz[0] - A.xyz[0];
-				B.relative_xyz[1] = B.xyz[1] - A.xyz[1];
-				B.relative_xyz[2] = B.xyz[2] - A.xyz[2];
-				B.origin_point_i = i;
-				B.origin_point_j = j;
-				// printf(" i j %d %d, origi i j %d %d\n", i, j, B.origin_point_i, B.origin_point_j);
-				data->map.coords[i][j + 1] = B;
-			}
-			if(j == 0 && i != data->map.max_height - 1)
-			{
-				C.relative_xyz[0] = C.xyz[0] - A.xyz[0];
-				C.relative_xyz[1] = C.xyz[1] - A.xyz[1];
-				C.relative_xyz[2] = C.xyz[2] - A.xyz[2];
-				C.origin_point_i = i;
-				C.origin_point_j = j;
-				data->map.coords[i + 1][j] = C;
-			}
-			// printf("\nxyz rel A %d %d %d i j = %d %d origi i j = %d %d\n", A.relative_xyz[0], A.relative_xyz[1], A.relative_xyz[2], i, j, A.origin_point_i, A.origin_point_j);
-			// printf("xyz rel C %d %d %d  i j = %d %d\n", C.relative_xyz[0], C.relative_xyz[1], C.relative_xyz[2], i + 1, j);
-			// printf("xyz rel B %d %d %d i j = %d %d\n", B.relative_xyz[0], B.relative_xyz[1], B.relative_xyz[2], i, j + 1);
-			j++;
-		}
-		j = 0;
-		i++;
-	}
-}
-
 double vector_len(map_data *map, int i, int j)
 {
 	double len_xyA_point;
@@ -97,203 +42,16 @@ void assign_vectors_len(ptrs *data, int i, int j)
 	//printf("len vector right %f, down %f\t relat.height = %d\ti j = %d %d\n\n", map->coords[i][j].vector_right_len, map->coords[i][j].vector_down_len, map->coords[i][j].relative_xyz[2], i , j);
 }
 
-void offset_draw(map_data *map, int i, int j)
-{
-	map->coords[i][j].xyz[0] += map->start_pos_x;
-	map->coords[i][j].xyz[1] += map->start_pos_y;
-}
-
-//void draw_xy_projection(ptrs *data)
-//{
-//	int i;
-//	int j;
-
-//	i = 0;
-//	j = 0;
-
-//	data->map.coords[i][j].draw_xy[0] = data->map.coords[i][j].draw_xy[0]            
-//}
-
-void init_R_around_Z(double R[3][3], char axis, double rad)
-{
-	(void)axis;
-	R[0][0]  = rad;
-	R[0][1]  = -rad;
-	R[0][2]  = 0;
-	R[1][0]  = rad;
-	R[1][1]  = rad;
-	R[1][2]  = 0;
-	R[2][0]  = 0;
-	R[2][1]  = 0;
-	R[2][2]  = 1;
-}
-
-void init_R_around_Y(double R[3][3], char axis, double rad)
-{
-	(void)axis;
-	R[0][0]  = rad;
-	R[0][1]  = 0;
-	R[0][2]  = rad;
-	R[1][0]  = 0;
-	R[1][1]  = 1;
-	R[1][2]  = 0;
-	R[2][0]  = 0;
-	R[2][1]  = 0;
-	R[2][2]  = 0;
-}
-
-void init_R_around_X(double R[3][3], char axis, double rad)
-{
-	(void)axis;
-	R[0][0]  = 1;
-	R[0][1]  = 0;
-	R[0][2]  = 0;
-	R[1][0]  = 0;
-	R[1][1]  = 0;
-	R[1][2]  = rad;
-	R[2][0]  = 0;
-	R[2][1]  = 0;
-	R[2][2]  = rad;
-}
-
-//void init_result(double M[])
-//{
-	
-//}
-
-void translate_map(map_data *map, ptrs *data)
-{
-	int j;
-	int i;
-	int k;
-	int l;
-	int m;
-
-	i = 0;
-	j = 1;
-	//double T[2] = {val_1, val_2};
-	//double T2[2] = {val_2, val_1};
-	//double T[3][3] = {val_1, val_2};
-	//double T2[3][3] = {val_2, val_1};
-	int result[3];
-	printf("hello");
-	k = 0;
-	l = 0;
-	m = 0;
-	double R2[2][2] = {{0,-1},{1, 0}};
-	double R[3][3];
-	double R3[3][3];
-	double R4[3][3];
-	double comp[3][3];
-	double comp2[3][3];
-	init_R_around_Z(R, 'z', DEGR_TO_RAD(data->orientation.rad_angle_around_z));
-	init_R_around_Y(R3, 'z', DEGR_TO_RAD(data->orientation.rad_angle_around_y));
-	init_R_around_X(R4, 'z', DEGR_TO_RAD(45));
-	compilation_matrix(comp, R, R3);
-	compilation_matrix(comp2, comp, R4);
-	//init_result(result);
-	for (int i = 0; i < 3; ++i)
-			result[i] = 0;
-	//offset_draw(map, i, j);
-	while (i < map->max_height)
-	{
-		while (j < map->max_width)
-		{	
-			//ffset_draw(map, i, j);
-			//offset_draw(map, i + 1, j);
-			//offset_draw(map, i, j + 1);
-			while (l < 3)
-			{
-				while (m < 3)
-				{			
-					if(map->coords[i][j].origin_point_i < i)
-						result[l] += map->coords[i][j].relative_xyz[m] * R[m][l];
-					else
-						result[l] += map->coords[i][j].relative_xyz[m] * R[m][l];
-					m++;
-				}
-				m = 0;
-				l++;
-			}
-			l = 0;
-			while (l < 3)
-			{
-				if(j == 0)
-					map->coords[i][j].xyz[l] = map->coords[i - 1][j].xyz[l] + result[l];
-				else
-					map->coords[i][j].xyz[l] = map->coords[i][j - 1].xyz[l] + result[l];
-				l++;
-			}
-			l = 0;
-			// printf("xy new %d %d origin i j = %d %d\n", result[0], result[1], map->coords[i][j].origin_point_i, map->coords[i][j].origin_point_j);
-			// printf("absulote xy new %d %d\n", map->coords[i][j].xyz[0], map->coords[i][j].xyz[1]);
-			j++;
-			for (int i = 0; i < 3; ++i)
-				result[i] = 0;
-		}
-		printf("\n\n");
-		j = 0;
-		i++;
-	}
-}
+// void offset_draw(map_data *map, int i, int j)
+// {
+// 	map->coords[i][j].xyz[0] += map->world_pos_Dxy[0];
+// 	map->coords[i][j].xyz[1] += map->world_pos_Dxy[1];
+// }
 
 void new_start_Dxy(ptrs *data, int startpos_x, int startpos_y)
 {
-	data->map.start_pos_y += startpos_y;
-	data->map.start_pos_x += startpos_x;
-}
-
-void keypressed(mlx_key_data_t key_data, void *data_ptrs)
-{
-	ptrs *data = (ptrs *)data_ptrs;
-
-	static double t_const1 = 0;
-	static double t_const2 = 0;
-	//printf("key pressed = %d \n", key_data.key);
-	//printf("value %f\n\n", data->view.rad_angle_around_z);
-	int startpos_x;
-	int startpos_y;
-	startpos_x = 0;
-	startpos_y = 0;
-	if (key_data.key == ON_A)
-		startpos_x = -10;
-	else if(key_data.key == ON_W)
-		startpos_y = -10;
-	else if(key_data.key == ON_D)
-		startpos_x = 10;
-	else if(key_data.key == ON_S)
-		startpos_y = 10;
-	else if (key_data.key == ON_KEYRIGHT)
-	{
-		//mlx_delete_image(data->mlx,data->img);
-		//data->orientation.rad_angle_around_z += DEGR_TO_RAD(90);
-		//data->orientation.rad_angle_around_y -= DEGR_TO_RAD(90);
-		//clear_img(data->img, WIDTH, HEIGHT);
-		data->view.rad_angle_around_y -= DEGR_TO_RAD(10);
-		//data->view.rad_angle_around_z -= DEGR_TO_RAD(10);
-		//printf("value after %f\n\n", data->view.rad_angle_around_z);
-		//printf("valu");
-	}
-	else if (key_data.key == ON_KEYLEFT)
-	{
-		//mlx_delete_image(data->mlx,data->img);
-		data->view.rad_angle_around_y += DEGR_TO_RAD(10);
-		//data->view.rad_angle_around_z += DEGR_TO_RAD(10);
-		//data->orientation.rad_angle_around_z += DEGR_TO_RAD(10);
-		//data->orientation.rad_angle_around_y += DEGR_TO_RAD(10);
-		//printf("value after %f\n\n", data->view.rad_angle_around_z);
-		//printf("valu");
-	}
-	else
-		return ;
-	clear_img(data->img, WIDTH, HEIGHT);
-	//if((key_data.key == ON_KEYRIGHT || (key_data.key == ON_KEYLEFT)))
-	//	translate_map(&data->map, data);
-	new_start_Dxy((ptrs *)data_ptrs, startpos_x, startpos_y);
-	//set_view_data(data, 45, 45);
-	make_draw_Dxy(data);
-	//printf("1 = %d  2 = %d\n", data->pos_x, data->pos_y);
-	//mlx_image_to_window(data->mlx, data->img, data->pos_x, data->pos_y);
+	data->map.world_pos_Dxy[0] += startpos_y;
+	data->map.world_pos_Dxy[1] += startpos_x;
 }
 
 void free_map(ptrs *data_ptrs)
@@ -306,38 +64,50 @@ void free_map(ptrs *data_ptrs)
 	free(data_ptrs->map.coords);
 }
 
-void init_orientation(ptrs *data, double angle1, double angle2)
+void init_orientation(ptrs *data, double Theta1, double Theta2, double Theta3)
 {
-	data->orientation.rad_angle_around_z = angle1;
-	data->orientation.rad_angle_around_y = angle2;
+	data->orientation.rad_angle_around_x = DEGR_TO_RAD(Theta1);
+	data->orientation.rad_angle_around_y = DEGR_TO_RAD(Theta2);
+	data->orientation.rad_angle_around_z = DEGR_TO_RAD(Theta3);
+}
+
+void init_view_zoom(ptrs *data, double zoom)
+{
+	data->view.zoom = zoom;
+}
+
+void init_model_start(ptrs *data, int xyz[3])
+{
+	data->map.model_in_world_pos_xyz[0] = xyz[0];
+	data->map.model_in_world_pos_xyz[1] = xyz[1];
+	data->map.model_in_world_pos_xyz[2] = xyz[2];
 }
 
 int32_t main(int32_t argc, char* argv[])
 {
 	ptrs data_ptrs;
 
-	data_ptrs.map.start_pos_x = 120;
-	data_ptrs.map.start_pos_y = 120;
+	data_ptrs.map.world_pos_Dxy[0] = 150;
+	data_ptrs.map.world_pos_Dxy[1] = 150;
 	if(save_map(argv[1], &data_ptrs))
 		return (1);
-	// Gotta error check this stuff
-	printf("hoiaaaaa\n");
 	data_ptrs.mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true);
 	data_ptrs.img = mlx_new_image(data_ptrs.mlx, WIDTH, HEIGHT);
 	data_ptrs.t_const1 = 1;
-	data_ptrs.t_const2 = 0;
-	data_ptrs.pos_x = 50;
-	set_view_data(&data_ptrs, 45, 45);
-	init_orientation(&data_ptrs, 0, 0);
-	//printf("hois %i");
-	// translate_map(&data_ptrs.map, data_ptrs.t_const1, data_ptrs.t_const2);
+	data_ptrs.t_const2 = 1;
+
+	set_view_data(&data_ptrs, 90, 90, 90);
+	init_view_zoom(&data_ptrs, 1);
+	init_orientation(&data_ptrs, 0, 0, 0);
+	init_model_start(&data_ptrs, (int[3]){0, 0, 0});
+	translate_map(&data_ptrs.map, &data_ptrs);
 	make_draw_Dxy(&data_ptrs);
-	//draw_map(&data_ptrs, (int)white);
+	draw_axes(&data_ptrs);
 	mlx_key_hook(data_ptrs.mlx, keypressed, &data_ptrs);
 	mlx_image_to_window(data_ptrs.mlx, data_ptrs.img, 50, 50);
 	mlx_loop(data_ptrs.mlx);
-	// // mlx_delete_image(mlx, img);
 	mlx_terminate(data_ptrs.mlx);
 	free_map(&data_ptrs);
 	return (EXIT_SUCCESS);
 }
+	// printf("value before %f\n\n", data_ptrs.orientation.rad_angle_around_x);

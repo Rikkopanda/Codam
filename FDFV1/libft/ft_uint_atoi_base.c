@@ -15,12 +15,10 @@
 
 int	start_initial_substring(char *str, char *base, int passeer)
 {
-	int	resultaat;
 	int	i;
 	int	j;
 	int	count;
 
-	resultaat = 0;
 	i = 0;
 	j = 0;
 	while (str[i] != '\0')
@@ -150,7 +148,7 @@ unsigned int	ft_uint_atoi_base(char *str, char *base)
 	if (i == -1)
 		return (0);
 	dec_nbr = base_substr_to_int(base, str, i, base_len);
-	printf("%u", dec_nbr);
+	// printf("%u", dec_nbr);
 	//if (((min % 2) == 0) || (min == 0))
 		return (dec_nbr);
 	//return (-dec_nbr);

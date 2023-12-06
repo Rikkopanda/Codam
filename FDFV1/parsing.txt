@@ -43,13 +43,6 @@ int map_strarr(char* argv, map_data *map, char ***total_arr)
 	return (0);
 }
 
-typedef struct index{
-	int i;
-	int j;
-	int n;
-
-} i_data;
-
 int	fdf_ischar(char str_chr, char check)
 {
 	if (str_chr == check)
@@ -74,39 +67,6 @@ int is_nul_or_eof(int c)
 {
 	if (c == EOF || c == '\0')
 		return (1);
-	return (0);
-}
-
-int map_intarr(map_data *map, char **total_arr, i_data *i)
-{
-	while (i->i < map->max_height)
-	{
-		while (total_arr[i->i][i->n])
-		{
-			if (ft_isdigit(total_arr[i->i][i->n]) || total_arr[i->i][i->n] == '-')//error handle still
-			{
-				map->coords[i->i][i->j].xyz[2] = SCALE(ft_atoi(&total_arr[i->i][i->n]), 100);
-				map->coords[i->i][i->j].xyz[1] = SCALE(i->i, 100);
-				map->coords[i->i][i->j].xyz[0] = SCALE(i->j, 100);
-				if(total_arr[i->i][i->n] == '-')
-					i->n++;
-				while(ft_isdigit(total_arr[i->i][i->n]))
-					i->n++;
-				i->n++;
-				map->coords[i->i][i->j].color = parse_color(&total_arr[i->i][i->n + 2]);
-				init_rgbs(&map->coords[i->i][i->j]);
-				while (!fdf_ischar(total_arr[i->i][i->n], ' ') && !is_nul_or_eof(total_arr[i->i][i->n]))
-					i->n++;
-				i->j++;
-			}
-			else
-				i->n++;
-		}
-		i->j = 0;
-		i->n = 0;
-		i->i++;
-	}
-	//printf("hoi4a\n");
 	return (0);
 }
 

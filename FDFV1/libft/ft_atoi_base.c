@@ -15,12 +15,10 @@
 
 int	start_initial_substring(char *str, char *base, int passeer)
 {
-	int	resultaat;
 	int	i;
 	int	j;
 	int	count;
 
-	resultaat = 0;
 	i = 0;
 	j = 0;
 	while (str[i] != '\0')
