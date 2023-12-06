@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 
         if(!data.p)
         {
-            dup2(data.pipefds[1], 1);
+            dup2(data.pipefds[1], STDOUT_FILENO);
             close(data.pipefds[1]);
             execlp("ls", "ls", "-l", NULL);
         }

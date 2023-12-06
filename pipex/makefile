@@ -1,12 +1,14 @@
 
 
-MAIN_SRCS= main.c
+MAIN_SRCS= pipex.c	\
+		gnl/get_next_line.c \
+		gnl/get_next_line_utils.c
 
 M_OBJS = $(MAIN_SRCS:.c=.o)
 
-M_A = main.a
+M_A = pipex.a
 
-M_EXE = m_exe
+M_EXE = pipex
 
 SUBPROGRAM1_SRCS = new_program.c
 
@@ -39,7 +41,6 @@ $(SP1_EXE): $(SP1_OBJS)
 
 $(SP1_OBJS): %.o: %.c
 		cc -c $< -o $@
-
 
 clean:
 	rm $(SP1_OBJS) $(M_OBJS)
