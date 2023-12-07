@@ -1,0 +1,3 @@
+-rw-r--r-- 1 rverhoev piscine  2385 Dec  6 15:52 testmain2.c
+-rw-r--r-- 1 rverhoev piscine  2508 Dec  6 20:27 testmain2 copy.c
+-rw-r--r-- 1 rverhoev piscine   525 Dec  6 15:52 testmain.c
