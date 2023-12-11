@@ -1,6 +1,7 @@
 
 
 MAIN_SRCS= pipex.c	\
+		cmd1.c \
 		gnl/get_next_line.c \
 		gnl/get_next_line_utils.c
 

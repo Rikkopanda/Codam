@@ -14,5 +14,4 @@ void free_arr(void **ptr)
 	}
 	free(ptr);
 			char argv2stack[3][10];
-		argv2 = ft_split(argv[3], ' ');
 }

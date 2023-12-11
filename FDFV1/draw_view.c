@@ -98,8 +98,8 @@ int interpolate(ptrs *data, point	*ori, point	*s, int count)
 	new_color.b = (ori->b * (1 - percentage)) + s->b * percentage;
 	new_color.a = (ori->a * (1 - percentage)) + s->a * percentage;
 	color = ft_pixel_rgba(new_color.r, new_color.g, new_color.b, new_color.a);
-	//printf("interpolated at %f%% %d, %d, %d\n", percentage * 100, new_color.r, new_color.g, new_color.b);
-	//printf("colors %x, %x, interpolated: %x\n", ori->color, s->color, color);
+	printf("interpolated at %f%% %d, %d, %d\n", percentage * 100, new_color.r, new_color.g, new_color.b);
+	printf("colors %x, %x, interpolated: %x\n", ori->color, s->color, color);
 	return (color);
 }
 

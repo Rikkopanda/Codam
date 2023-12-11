@@ -1,0 +1,25 @@
+total 280
+drwxr-xr-x  7 rverhoev piscine  4096 Dec 11 10:48 .
+drwxr-xr-x 18 rverhoev piscine  4096 Dec  6 15:52 ..
+-rw-r--r--  1 rverhoev piscine   695 Dec 11 10:46 cmd1.c
+-rw-r--r--  1 rverhoev piscine  2272 Dec 11 10:47 cmd1.o
+drwxr-xr-x  2 rverhoev piscine   133 Dec  7 15:19 gnl
+-rw-r--r--  1 rverhoev piscine     0 Dec 11 10:49 infile
+drwxr-xr-x  4 rverhoev piscine  4096 Dec 11 10:47 libft
+-rw-r--r--  1 rverhoev piscine  1170 Dec  6 20:49 list.txt
+-rw-r--r--  1 rverhoev piscine   745 Dec 11 10:46 makefile
+-rw-r--r--  1 rverhoev piscine   191 Dec  6 15:52 new_program.c
+-rw-r--r--  1 rverhoev piscine  1536 Dec  7 15:19 new_program.o
+drwxr-xr-x  2 rverhoev piscine    67 Dec  7 15:19 oldtests
+-rwxr-xr-x  1 rverhoev piscine    24 Dec  7 16:35 outfile2.txt
+-rw-r--r--  1 rverhoev piscine   187 Dec  7 15:19 outfile.txt
+-rwxr-xr-x  1 rverhoev piscine 22008 Dec 11 10:47 pipex
+-rw-r--r--  1 rverhoev piscine 85734 Dec 11 10:47 pipex.a
+-rw-r--r--  1 rverhoev piscine  2538 Dec 11 10:47 pipex.c
+-rw-r--r--  1 rverhoev piscine   366 Dec 11 10:46 pipex.h
+-rw-r--r--  1 rverhoev piscine  4488 Dec 11 10:47 pipex.o
+drwxr-xr-x  4 rverhoev piscine  4096 Dec  6 15:52 practice
+-rw-r--r--  1 rverhoev piscine 85170 Dec  7 15:19 sp1.a
+-rwxr-xr-x  1 rverhoev piscine 15968 Dec  7 15:19 sp1_exe
+-rw-r--r--  1 rverhoev piscine   152 Dec  8 11:39 tools.c
+drwxr-xr-x  2 rverhoev piscine    27 Dec  6 15:52 .vscode
