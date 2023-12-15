@@ -13,7 +13,7 @@ void clear_img(mlx_image_t *img, int width, int height)
 	{
 		while (j < width)
 		{
-			mlx_put_pixel(img, j, i, (int)black);
+			mlx_put_pixel(img, j, i, (int)nada);
 			j++;
 		}
 	i++;
@@ -26,7 +26,8 @@ void init_rgbs(point *A)
 	A->r = (A->color >> 24) & 255;
 	A->g = (A->color >> 16) & 255;
 	A->b = (A->color >> 8) & 255;
-	 printf("color: %u. RGB = %d, %d, %d\n", A->color, A->r, A->g, A->b);
+	A->a = (A->color) & 255;
+	printf("color: %x. RGBA = %d, %d, %d, %d\n", A->color, A->r, A->g, A->b, A->a);
 }
 
 

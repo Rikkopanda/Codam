@@ -3,15 +3,17 @@ GNLSRCS = $(wildcard gnl/*.c)
 
 GNLOBJS = $(GNLSRCS:.c=.o)
 
-SRCS = main.c  \
-	parsing_copy.c \
-	draw_view.c \
-	matrix_tools.c \
-	tools.c \
-	hooks.c \
-	build_map.c \
-	build_model.c \
-	transform_model.c
+SRCDIR = src_fdf/
+
+SRCS = $(SRCDIR)main.c  \
+	$(SRCDIR)parsing_copy.c \
+	$(SRCDIR)draw_view.c \
+	$(SRCDIR)matrix_tools.c \
+	$(SRCDIR)tools.c \
+	$(SRCDIR)hooks.c \
+	$(SRCDIR)build_map.c \
+	$(SRCDIR)build_model.c \
+	$(SRCDIR)transform_model.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -21,11 +23,11 @@ NAME2 = fdf2
 
 FLAGS = -g -fsanitize=address
 
-FDF_H = fdf.h
+FDF_H = $(SRCDIR)fdf.h
 
 MLX42INCL = MLX42/include
 
-LIBA = libmlx42.a
+LIBA = archives/libmlx42.a
 
 LIBAHOME = /usr/include/MLX42/build/libmlx42.a
 

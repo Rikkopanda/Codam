@@ -42,29 +42,29 @@ void keypressed(mlx_key_data_t key_data, void *data_ptrs)
 	else if(key_data.key == ON_KEYDOWN)
 		data->map.model_in_world_pos_xyz[0] -= 10;
 	else if (key_data.key == ON_D)
-		data->orientation.rad_angle_around_x += DEGR_TO_RAD(20);
+		data->orientation.rad_angle_around_x += DEGR_TO_RAD(10);
 	else if (key_data.key == ON_A)
-		data->orientation.rad_angle_around_x -= DEGR_TO_RAD(20);
+		data->orientation.rad_angle_around_x -= DEGR_TO_RAD(10);
 	else if (key_data.key == ON_Q)
-		data->orientation.rad_angle_around_y += DEGR_TO_RAD(20);
+		data->orientation.rad_angle_around_y += DEGR_TO_RAD(10);
 	else if (key_data.key == ON_E)
-		data->orientation.rad_angle_around_y -= DEGR_TO_RAD(20);
+		data->orientation.rad_angle_around_y -= DEGR_TO_RAD(10);
 	else if (key_data.key == ON_W)
-		data->orientation.rad_angle_around_z += DEGR_TO_RAD(20);
+		data->orientation.rad_angle_around_z += DEGR_TO_RAD(10);
 	else if (key_data.key == ON_S)
-		data->orientation.rad_angle_around_z -= DEGR_TO_RAD(20);
+		data->orientation.rad_angle_around_z -= DEGR_TO_RAD(10);
 	else if (key_data.key == ON_I)
-		data->view.rad_angle_around_y -= DEGR_TO_RAD(10);
+		data->view.rad_angle_around_y -= DEGR_TO_RAD(5);
 	else if (key_data.key == ON_K)
-		data->view.rad_angle_around_y += DEGR_TO_RAD(10);
+		data->view.rad_angle_around_y += DEGR_TO_RAD(5);
 	else if (key_data.key == ON_J)
-		data->view.rad_angle_around_z -= DEGR_TO_RAD(10);
+		data->view.rad_angle_around_z -= DEGR_TO_RAD(5);
 	else if (key_data.key == ON_L)
-		data->view.rad_angle_around_z += DEGR_TO_RAD(10);
+		data->view.rad_angle_around_z += DEGR_TO_RAD(5);
 	else if (key_data.key == ON_U)
-		data->view.rad_angle_around_x -= DEGR_TO_RAD(10);
+		data->view.rad_angle_around_x -= DEGR_TO_RAD(5);
 	else if (key_data.key == ON_O)
-		data->view.rad_angle_around_x += DEGR_TO_RAD(10);
+		data->view.rad_angle_around_x += DEGR_TO_RAD(5);
 	else if (key_data.key == ON_PLUS)
 		data->view.zoom += 0.05;
 	else if (key_data.key == ON_MINUS)
@@ -76,7 +76,7 @@ void keypressed(mlx_key_data_t key_data, void *data_ptrs)
 		translate_map(&data->map, data);
 	new_start_Dxy((ptrs *)data_ptrs, startpos_x, startpos_y);
 	make_draw_Dxy(data);
-	draw_axes(data);
+	//draw_axes(data);
 	end_t = clock();
 	total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
 	// printf("Total time taken by CPU: %f\n", total_t  );

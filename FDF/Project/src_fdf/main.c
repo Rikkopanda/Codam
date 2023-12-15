@@ -42,12 +42,6 @@ void assign_vectors_len(ptrs *data, int i, int j)
 	//printf("len vector right %f, down %f\t relat.height = %d\ti j = %d %d\n\n", map->coords[i][j].vector_right_len, map->coords[i][j].vector_down_len, map->coords[i][j].relative_xyz[2], i , j);
 }
 
-// void offset_draw(map_data *map, int i, int j)
-// {
-// 	map->coords[i][j].xyz[0] += map->world_pos_Dxy[0];
-// 	map->coords[i][j].xyz[1] += map->world_pos_Dxy[1];
-// }
-
 void new_start_Dxy(ptrs *data, int startpos_x, int startpos_y)
 {
 	data->map.world_pos_Dxy[0] += startpos_y;
@@ -93,16 +87,13 @@ int32_t main(int32_t argc, char* argv[])
 		return (1);
 	data_ptrs.mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true);
 	data_ptrs.img = mlx_new_image(data_ptrs.mlx, WIDTH, HEIGHT);
-	data_ptrs.t_const1 = 1;
-	data_ptrs.t_const2 = 1;
-
-	set_view_data(&data_ptrs, 90, 90, 90);
+	set_view_data(&data_ptrs, 0, 0, 45);
 	init_view_zoom(&data_ptrs, 1);
-	init_orientation(&data_ptrs, 0, 0, 0);
-	init_model_start(&data_ptrs, (int[3]){0, 0, 0});
+	init_orientation(&data_ptrs, 45, 45, 0);
+	init_model_start(&data_ptrs, (int[3]){150, 150, 0});
 	translate_map(&data_ptrs.map, &data_ptrs);
 	make_draw_Dxy(&data_ptrs);
-	draw_axes(&data_ptrs);
+	//draw_axes(&data_ptrs);
 	mlx_key_hook(data_ptrs.mlx, keypressed, &data_ptrs);
 	mlx_image_to_window(data_ptrs.mlx, data_ptrs.img, 50, 50);
 	mlx_loop(data_ptrs.mlx);

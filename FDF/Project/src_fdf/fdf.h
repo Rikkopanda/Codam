@@ -8,12 +8,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
- #include "MLX42/include/MLX42/MLX42.h"
+ #include "../MLX42/include/MLX42/MLX42.h"
 //#include "/usr/include/MLX42/include/MLX42/MLX42.h"
 #include <math.h>
 #include "fcntl.h"
-#include "libft/libft.h"
-#include "gnl/get_next_line.h"
+#include "../libft/libft.h"
+#include "../gnl/get_next_line.h"
 #include <time.h>
 #include <stdio.h>
 # include <string.h>
@@ -152,10 +152,11 @@ enum {
 };
 
 enum hex_code{
-	black = 0x00000000,
+	nada = 0x00000000,
+	black = 0x000000FF,
 	white = 0xFFFFFFFF,
-	red = 0x00FF0000,
-	green = 0x0000FF00,
+	red = 0x00FF00FF,
+	green = 0x0000FFFF,
 	blue = 0x0000FFFF
 };                
 

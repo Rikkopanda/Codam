@@ -41,7 +41,6 @@ int map_intarr_xyz(map_data *map, char **total_arr, i_data *i)
 
 int map_intarr_xyz_rgba(map_data *map, char **total_arr, i_data *i)
 {
-	// printf("xyz\n");
 	while (i->i < map->max_height)
 	{
 		while (total_arr[i->i][i->n])
@@ -51,9 +50,7 @@ int map_intarr_xyz_rgba(map_data *map, char **total_arr, i_data *i)
 				map->coords[i->i][i->j].xyz[2] = SCALE(ft_atoi(&total_arr[i->i][i->n]), 20);
 				map->coords[i->i][i->j].xyz[1] = SCALE(i->i, 20);
 				map->coords[i->i][i->j].xyz[0] = SCALE(i->j, 20);
-				// printf("%d %d %d \t\t", map->coords[i->i][i->j].xyz[0],
-				// 	map->coords[i->i][i->j].xyz[1],
-				// 	map->coords[i->i][i->j].xyz[2]);
+
 				if(total_arr[i->i][i->n] == '-')
 					i->n++;
 				while(ft_isdigit(total_arr[i->i][i->n]))
@@ -71,9 +68,14 @@ int map_intarr_xyz_rgba(map_data *map, char **total_arr, i_data *i)
 		i->j = 0;
 		i->n = 0;
 		i->i++;
-		// printf("\n");
+
 	}
-	// printf("\n\n");
+
 	return (0);
 }
-
+// printf("xyz\n");
+// printf("%d %d %d \t\t", map->coords[i->i][i->j].xyz[0],
+// 	map->coords[i->i][i->j].xyz[1],
+// 	map->coords[i->i][i->j].xyz[2]);
+// printf("\n");
+// printf("\n\n");

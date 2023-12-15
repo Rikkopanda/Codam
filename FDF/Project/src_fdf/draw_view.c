@@ -72,8 +72,6 @@ int check_img_bounds(ptrs *data, int Dx, int Dy)
 	return (1);
 }
 
-//void fdf_put_pixel(ptrs *data, int x, int y,)
-
 double D_vector_len(point delta)
 {
 	double len;
@@ -89,20 +87,15 @@ int interpolate(ptrs *data, point	*ori, point	*s, int count)
 	double percentage;
 
 	percentage = (double)count / (double)data->dr_data.curr_line_steps;
-	//new_color.r = ori->r + (ori->r - s->r) * percentage;
-	//new_color.g = ori->g + (ori->g - s->g) * percentage;
-	//new_color.b = ori->b + (ori->b - s->b) * percentage;
-	//new_color.a = ori->a + (ori->a - s->a) * percentage;
-	new_color.r = (ori->r * (1 - percentage)) + s->r * percentage;
-	new_color.g = (ori->g * (1 - percentage)) + s->g * percentage;
-	new_color.b = (ori->b * (1 - percentage)) + s->b * percentage;
-	new_color.a = (ori->a * (1 - percentage)) + s->a * percentage;
+	new_color.r = (int)(((double)ori->r * ((double)1 - percentage)) + (double)s->r * percentage);
+	new_color.g = (int)(((double)ori->g * ((double)1 - percentage)) + (double)s->g * percentage);
+	new_color.b = (int)(((double)ori->b * ((double)1 - percentage)) + (double)s->b * percentage);
+	new_color.a = (int)(((double)ori->a * ((double)1 - percentage)) + (double)s->a * percentage);
 	color = ft_pixel_rgba(new_color.r, new_color.g, new_color.b, new_color.a);
-	printf("interpolated at %f%% %d, %d, %d\n", percentage * 100, new_color.r, new_color.g, new_color.b);
-	printf("colors %x, %x, interpolated: %x\n", ori->color, s->color, color);
+	// printf("\ninterpolated at %f%%\nold rgba: %d, %d, %d, %d\nnew rgba: %d, %d, %d, %d\n", percentage * 100, ori->r, ori->g, ori->b, ori->b, new_color.r, new_color.g, new_color.b, new_color.a);
+	// printf("point A %x to B %x, interpolated result: %x\n\n", ori->color, s->color, color);
 	return (color);
 }
-
 
 void calc_line_len(ptrs *data, point A_cnt, point B_cnt)
 {
@@ -136,35 +129,21 @@ void init_draw_data(ptrs *data, point *f, point *s)
 	data->dr_data.draw_color = 0;
 }
 
-
-void fdf_put_pixel(ptrs *data,  int P_Dx, int P_Dy, int thickness)
+void	draw_line(ptrs *data, point *f, point *s)
 {
-	int cnt;
+	init_draw_data(data, f, s);
 
-	cnt = 0;
-	//printf("x %d\n", P_Dx + + data->map.start_pos_x);
-	//while(cnt < thickness)
-	//if(check_img_bounds(data, P_Dx, P_Dy) == 0)
-	//	mlx_put_pixel(data->img, P_Dx
-	//		 + data->map.start_pos_x, P_Dy
-	//		 	 + data->map.start_pos_y, data->dr_data.draw_color);
-}
-
-void	draw_line(ptrs *data, point f, point s)
-{
-	init_draw_data(data, &f, &s);
-
-	calc_line_len(data, f, s);
+	calc_line_len(data, *f, *s);
 	//int len = (int)D_vector_len(delta);
 	int count;
 	data->dr_data.draw_color = (int)white;
 	count = 0;
 	//printf("deltax = %d y = %d\n", delta.Dxy[0], delta.Dxy[1]);
-	while (data->dr_data.cur.Dxy[0] != s.Dxy[0] || data->dr_data.cur.Dxy[1] != s.Dxy[1])
+	while (data->dr_data.cur.Dxy[0] != (*s).Dxy[0] || data->dr_data.cur.Dxy[1] != (*s).Dxy[1])
 	{
-		//printf("hoi 1\n");
-		if(data->dr_data.cur.color != s.color)
-			data->dr_data.draw_color = interpolate(data, &f, &s, count);
+		//print*f("hoi 1\n");
+		if(data->dr_data.cur.color != (*s).color)
+			data->dr_data.draw_color = interpolate(data, f, s, count);
 		else
 			data->dr_data.draw_color = data->dr_data.cur.color;
 		//fdf_put_pixel(data, data->dr_data.cur.Dxy[0], data->dr_data.cur.Dxy[0], 1);
@@ -195,7 +174,7 @@ void set_axes_Dxy(ptrs *data, point *p)
 
 	p->Dxy[1] = p->world_xyz[0] * -sin(data->view.rad_angle_around_z);
 	p->Dxy[1] += p->world_xyz[1] * cos(data->view.rad_angle_around_z);
-
+	basic_map_coloring(p);
 	// p->Dxy[1] += -p->world_xyz[2] * sin(data->view.rad_angle_around_y);
 	// p->Dxy[1] += p->world_xyz[1] * sin(data->view.rad_angle_around_y);
 }
@@ -206,9 +185,9 @@ void draw_axes(ptrs *data)
 	set_axes_Dxy(data, &data->map.world_axes_oxyz[1]);
 	set_axes_Dxy(data, &data->map.world_axes_oxyz[2]);
 	set_axes_Dxy(data, &data->map.world_axes_oxyz[3]);
-	draw_line(data, data->map.world_axes_oxyz[0], data->map.world_axes_oxyz[1]);
-	draw_line(data, data->map.world_axes_oxyz[0], data->map.world_axes_oxyz[2]);
-	draw_line(data, data->map.world_axes_oxyz[0], data->map.world_axes_oxyz[3]);
+	draw_line(data, &data->map.world_axes_oxyz[0], &data->map.world_axes_oxyz[1]);
+	draw_line(data, &data->map.world_axes_oxyz[0], &data->map.world_axes_oxyz[2]);
+	draw_line(data, &data->map.world_axes_oxyz[0], &data->map.world_axes_oxyz[3]);
 }
 
 void draw_map(ptrs *data)
@@ -234,9 +213,11 @@ void draw_map(ptrs *data)
 			if (i < data->map.max_height - 1)
 				C = (point *)&data->map.coords[i + 1][j];
 			if (j < data->map.max_width - 1)
-				draw_line(data, *origin, *B);
+				draw_line(data, origin, B);
 			if (i < data->map.max_height - 1)
-				draw_line(data, *origin, *C);
+				draw_line(data, origin, C);
+			// printf("rgba: %d, %d, %d, %d\n", (*origin).r, (*origin).g, (*origin).b, (*origin).a);
+			// printf("rgba: %d, %d, %d, %d\n\n", (*C).r, (*C).g, (*C).b, (*C).a);
 			//assign_vectors_len(data, i , j);
 			j++;
 		}
