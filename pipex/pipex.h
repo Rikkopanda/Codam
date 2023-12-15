@@ -15,6 +15,13 @@
 #define WRITE 1
 #define READ 0
 
-void cmd1(int *pipe_send_to_cmd[2], int *pipe_send_back[2], char **argv);
+typedef struct split_args
+{
+	// args[cmd][splitcmd][char]
+	char ***argssplit;
+}	args_data;
+
+
+void cmd(int pipe_send_to_cmd[2], int pipe_send_back[2], args_data *args, int i);
 
 #endif

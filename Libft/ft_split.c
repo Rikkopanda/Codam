@@ -18,6 +18,7 @@ static char	*split_substr(char const *s, unsigned int start, size_t len)
 	size_t	i;
 
 	substr = (char *)malloc(sizeof(char) * len);
+	printf("nbr of char* = %d\n", len);
 	if (substr == NULL)
 		return (NULL);
 	i = 0;
@@ -108,6 +109,8 @@ char	**ft_split(const char *s, char c)
 	if (!(word_cnt == 0))
 	{
 		str_arr = (char **)malloc(sizeof(char *) * (word_cnt + 1));
+		printf("nbr of char* = %d\n", word_cnt + 1);
+
 		splitting(str_arr, (char *)s, c, word_cnt);
 		if (str_arr == NULL)
 			return (NULL);
@@ -115,6 +118,7 @@ char	**ft_split(const char *s, char c)
 	if (word_cnt == 0)
 	{
 		str_arr = (char **)malloc(sizeof(char *) * 1);
+		printf("%d char * mallocs\n", word_cnt + 1);
 		if (str_arr == NULL)
 			return (NULL);
 		str_arr[0] = NULL;

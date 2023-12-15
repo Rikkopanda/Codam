@@ -7,6 +7,7 @@ char *ft_substr(char const *s, unsigned int start, size_t len)
     size_t i;
 
     substr = (char*)malloc(sizeof(char) * len);
+    printf("%d char malloc\n", len);
     if(substr == NULL)
         return(NULL);
     i = 0;

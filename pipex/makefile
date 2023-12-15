@@ -1,7 +1,7 @@
 
 
 MAIN_SRCS= pipex.c	\
-		cmd1.c \
+		cmds.c \
 		gnl/get_next_line.c \
 		gnl/get_next_line_utils.c
 
@@ -23,13 +23,16 @@ LIBFTA = libft/libft.a
 
 FLAGS = -Wall
 
-all: $(M_EXE) $(SP1_EXE)
+all: $(M_EXE)
+	
 
-$(M_EXE): $(M_OBJS)
-	make -C libft/
+$(M_EXE): $(M_OBJS) $(LIBFTA)
 	cp $(LIBFTA) $(M_A)
 	ar rcs $(M_A) $(M_OBJS)
 	cc $(M_A) -o $(M_EXE)
+
+$(LIBFTA):
+	make -C libft/
 
 $(M_OBJS): %.o: %.c
 		cc -c $< -o $@

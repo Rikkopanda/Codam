@@ -6,11 +6,12 @@ char *read_fd(int fd)
 {
 	char *totalbuf;
     char *next_line;
+	char *tmp_str;
     int j;
+
     j = 0;
     totalbuf = ft_calloc(sizeof(char), BUFFER_SIZE + 1);
 	totalbuf[0] = '\0';
-	char *tmp_str;
 	tmp_str = malloc(1); //because realloc needs a malloced pointer
 	while(1)
 	{
@@ -43,83 +44,103 @@ char *read_file(char *path, int fd)
 	return(str);
 }
 
-typedef struct split_args
+void parse_args(args_data *args, char **argv, int argc)
 {
-	char *argv2[3];       
-	char **argv3tmp;
+	(*args).argssplit = malloc(sizeof(char **) * argc); //enough for extra null
+	int i;
 
-
-}	args_data;
-
-void parse_args(args_data *args, char **argv)
-{
-	args->argv3tmp = ft_split(argv[2], ' ');
-	args->argv2[0] = args->argv3tmp[0];
-	args->argv2[1] = args->argv3tmp[1];
-	args->argv2[2] = NULL;
+	i = 1;
+	while(i < argc)
+	{
+		(*args).argssplit[i - 1] = ft_split(argv[i], ' ');
+		i++;
+	}
+	(*args).argssplit[i - 1] = NULL;
 }
 
+void free_args(args_data *args)
+{
+	int i;
+	int j;
+
+	j = 0;
+	i = 0;
+	while((*args).argssplit[i] != NULL)
+	{
+		while((*args).argssplit[i][j] != NULL)
+		{
+			free((*args).argssplit[i][j]);
+			j++;
+		}
+		free((*args).argssplit[i][j]);
+		j = 0;
+		free((*args).argssplit[i]);
+		i++;
+	}
+	free((*args).argssplit[i]);
+	free((*args).argssplit);
+}
+
+void write_from_parent_to_cmd(int pipe_send_to_cmd[2], int pipe_send_back[2], char *buf)
+{
+	close(pipe_send_to_cmd[READ]); // Close the read end of the pipe in the parent
+	write(pipe_send_to_cmd[WRITE], buf, strlen(buf));
+	close(pipe_send_to_cmd[WRITE]);
+	close(pipe_send_back[WRITE]);
+	free(buf);
+	buf = 0;
+}
+
+void receive(int sent_pipe[2], int receive_pipe[2], char **buf)
+{
+	close(sent_pipe[WRITE]);
+	close(sent_pipe[READ]);
+	close(receive_pipe[WRITE]);
+	*buf = read_file(NULL, receive_pipe[READ]);
+	close(receive_pipe[READ]);
+}
+
+void write_out_pluscleanup(args_data *args, char *buf)
+{
+	int status;
+	wait(&status);
+	int fd = open((*args).argssplit[3][0], O_WRONLY | O_CREAT | O_TRUNC);
+	write(fd, buf, ft_strlen(buf));
+	close(fd);
+	free(buf);
+	free_args(args);
+}
+
+// argv[1],argv[2],argv[3],argv[4], NULL
+// < file | cmd1 | cmd2 > file2
+// zelfde als(als shell command):
+// < file cmd1 | cmd2 > file2 (vanwege <)
 int main(int argc, char **argv)
 {
-	if(argc != 5)
-		return (0);
-	// argv[1],argv[2],argv[3],argv[4], NULL
-	// < file | cmd1 | cmd2 > file2
-	// zelfde als(als shell command):
-	// < file cmd1 | cmd2 > file2 (vanwege <)
-
 	char *buf;
 	int pipeA[2];
 	int pipeB[2];
 	int pipeC[2];
-	int status;
-	char path[20];
-	char *argv2[3];       
-	char **argv3tmp;
+	args_data args;
+	pid_t p;
 
+	if(argc != 5)
+		return (0);
+	parse_args(&args, argv, argc);
 	buf = read_file(argv[1], -1);
-	//printf("%s\n", buf);
 	pipe(pipeA);
 	pipe(pipeB);
-	pid_t p = fork();
-	if (p == 0) { // Child process
-		cmd1(&pipeA, &pipeB, argv);
-	}
-	// Parent process
-	close(pipeA[READ]); // Close the read end of the pipe in the parent
-	write(pipeA[WRITE], buf, strlen(buf));
-	close(pipeA[WRITE]);
-	close(pipeB[WRITE]); 
-	// sleep(10);
+	p = fork();
+	if (p == 0)
+		cmd(pipeA, pipeB, &args, 1);
+	write_from_parent_to_cmd(pipeA, pipeB, buf);
 	pipe(pipeC);
 	p = fork();
-	if (p == 0) { // Child process
-		dup2(pipeB[READ], STDIN_FILENO);
-		close(pipeB[READ]);
-		close(pipeB[WRITE]); // Close the write end of the pipe in the child
-		close(pipeC[READ]);
-		dup2(pipeC[WRITE], STDOUT_FILENO);
-		close(pipeC[WRITE]); 
-		// sleep(10);
-		char *envp[] = {"PATH=/bin:/usr/bin", NULL};     
-		argv3tmp = ft_split(argv[3], ' ');
-		argv2[0] = argv3tmp[0];
-		argv2[1] = argv3tmp[1];
-		argv2[2] = NULL;		
-		ft_strcpy(path, "/bin/");
-		execve(ft_strcat(path, argv2[0]), argv2, envp);
-		perror("execve");
-		exit(EXIT_FAILURE);
-	}
-	close(pipeB[READ]);
-	close(pipeC[WRITE]);
-	buf = read_file(NULL, pipeC[READ]);
-	close(pipeC[READ]);
-	// printf("read buf = %s\n", buf);
-	// waitpid(p, &status, 0);// child grep waits for a write to pfds[]
-	wait(&status);
-	int fd = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC);
-	write(fd, buf, ft_strlen(buf));
-	close(fd);
-	free(buf);
+	if (p == 0)
+		cmd(pipeB, pipeC, &args, 2);
+	receive(pipeB, pipeC, &buf);
+	write_out_pluscleanup(&args, buf);
 }
+// printf("%s\n", buf);
+// printf("read buf = %s\n", buf);
+// waitpid(p, &status, 0);// child grep waits for a write to pfds[]
