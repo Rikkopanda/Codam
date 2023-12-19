@@ -1,6 +1,6 @@
 #include "philosophers.h"
 
-void set_args_philo(philosophers *philo, struct timeval *tv)
+void set_args_philo(t_philosophers *philo, struct timeval *tv)
 {
 	gettimeofday(tv, NULL);
 	philo->last_meal_ms = ((*tv).tv_sec * 1000) + ((*tv).tv_usec / 1000);
@@ -8,7 +8,7 @@ void set_args_philo(philosophers *philo, struct timeval *tv)
 	philo->cnt_time_eaten = 0;
 }
 
-int time_since_last_meal(philosophers *philo, struct timeval *tv)
+int time_since_last_meal(t_philosophers *philo, struct timeval *tv)
 {
 	unsigned long long current_time;
 
@@ -17,7 +17,7 @@ int time_since_last_meal(philosophers *philo, struct timeval *tv)
 	return (current_time - philo->last_meal_ms);
 }
 
-void assign_fork_ptrs(philosophers *philo)
+void assign_fork_ptrs(t_philosophers *philo)
 {
 	if(philo->philo_Nbr < philo->args->number_of_philosophers)
 	{
@@ -31,7 +31,7 @@ void assign_fork_ptrs(philosophers *philo)
 	}
 }
 
-void find_adjecent_philos(philosophers *philo)
+void find_adjecent_philos(t_philosophers *philo)
 {
 	if(philo->philo_Nbr < philo->args->number_of_philosophers)
 	{

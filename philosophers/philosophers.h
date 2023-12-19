@@ -9,6 +9,7 @@
 typedef struct f_data
 {
 	long fork;
+	pthread_mutex_t lock;
 }	fork_array;
 
 typedef struct a_data
@@ -23,14 +24,14 @@ typedef struct a_data
 
 
 
-typedef struct p_data philosophers;
+typedef struct s_data t_philosophers;
 
-struct p_data
+struct s_data
 {
 	pthread_t th_id;
 	int philo_Nbr;
-	philosophers *right_neighbour;
-	philosophers *left_neighbour;
+	t_philosophers *right_neighbour;
+	t_philosophers *left_neighbour;
 	fork_array *left_fork;
 	fork_array *right_fork;
 	int cnt_to_die;
@@ -46,17 +47,17 @@ struct p_data
 void  *routine(void *voidptr);
 
 // make philos
-int create_philos(philosophers **philos, arguments *args);
+int create_philos(t_philosophers **philos, arguments *args);
 int init_args(arguments *args, int argc, char **argv);
 
 // post_routine
-void join_philos(philosophers *philos, int number_of_philosophers);
+void join_philos(t_philosophers *philos, int number_of_philosophers);
 
 // routine tools
-void set_args_philo(philosophers *philo, struct timeval *tv);
-int time_since_last_meal(philosophers *philo, struct timeval *tv);
-void find_adjecent_philos(philosophers *philo);
-void assign_fork_ptrs(philosophers *philo);
+void set_args_philo(t_philosophers *philo, struct timeval *tv);
+int time_since_last_meal(t_philosophers *philo, struct timeval *tv);
+void find_adjecent_philos(t_philosophers *philo);
+void assign_fork_ptrs(t_philosophers *philo);
 
 
 #endif

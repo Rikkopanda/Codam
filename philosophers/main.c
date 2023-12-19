@@ -6,7 +6,7 @@ int cont = 0;
 int main(int argc, char **argv)
 {
 	arguments args;
-	philosophers *philos;
+	t_philosophers *philos;
 
 	if(init_args(&args, argc, argv) == -1)
 		return (-1);

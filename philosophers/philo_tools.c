@@ -1,13 +1,12 @@
 
 #include "philosophers.h"
 
-
-int create_philos(philosophers **philos, arguments *args)
+int create_philos(t_philosophers **philos, arguments *args)
 {
 	int i;
 	fork_array *forks;
 
-	*philos = malloc(sizeof(philosophers) * (*args).number_of_philosophers);
+	*philos = malloc(sizeof(t_philosophers) * (*args).number_of_philosophers);
 	forks = malloc(sizeof(forks) * (*args).number_of_philosophers);
 	(*args).forks_ptr = forks;
 
@@ -27,7 +26,7 @@ int create_philos(philosophers **philos, arguments *args)
 	//return (*philos);
 }
 
-void join_philos(philosophers *philos, int number_of_philosophers)
+void join_philos(t_philosophers *philos, int number_of_philosophers)
 {
 	int i;
 
