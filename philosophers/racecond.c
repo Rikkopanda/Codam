@@ -1,5 +1,6 @@
 
 #include "philosophers.h"
+#include <sys/time.h>
 
 int cont = 0;
 pthread_mutex_t lock;
@@ -9,11 +10,12 @@ void  *routine(void *voidptr)
 	pointers *ptrs = (pointers *)voidptr;
 
 	(*ptrs).philo->cnt_to_die = (*ptrs).args->time_to_die;
+	
 	while (0 < (*ptrs).philo->cnt_to_die)
 	{
 		pthread_mutex_lock(&lock);
 		cont++;
-		//(*ptrs).philo->cnt_to_die--;
+		(*ptrs).philo->cnt_to_die--;
 		pthread_mutex_unlock(&lock);
 	}
 	return (NULL);
@@ -35,9 +37,11 @@ void *create_philos(philosophers **philos, arguments *args)
 	{
 		data_ptrs->args = args;
 		data_ptrs->philo = &(*philos)[i];
+		printf("creating...\n");
 		pthread_create(&(*philos)[i].th_id, NULL, &routine, data_ptrs);
 		i++;
 	}
+	printf("done creating\n");
 	return (data_ptrs);
 }
 
