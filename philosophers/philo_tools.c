@@ -9,7 +9,6 @@ int create_philos(t_philosophers **philos, arguments *args)
 	*philos = malloc(sizeof(t_philosophers) * (*args).number_of_philosophers);
 	forks = malloc(sizeof(forks) * (*args).number_of_philosophers);
 	(*args).forks_ptr = forks;
-
 	if(!philos)
 		return (-1);
 	i = 1;
@@ -61,5 +60,6 @@ int init_args(arguments *args, int argc, char **argv)
 	else
 		(*args).number_of_times_each_philosopher_must_eat = -1;
 	free(argu_nbrs);
+	// printf("hello ok\n");
 	return (0);
 }

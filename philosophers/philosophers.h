@@ -8,7 +8,6 @@
 
 typedef struct f_data
 {
-	long fork;
 	pthread_mutex_t lock;
 }	fork_array;
 
@@ -20,9 +19,8 @@ typedef struct a_data
 	int time_to_sleep;
 	int number_of_times_each_philosopher_must_eat;
 	fork_array *forks_ptr;
+
 }	arguments;
-
-
 
 typedef struct s_data t_philosophers;
 
@@ -40,6 +38,7 @@ struct s_data
 	int nbr_of_times_eaten;
 	int cnt_time_eaten;
 	unsigned long long last_meal_ms;
+	unsigned long print_date;
 	arguments *args;
 };
 

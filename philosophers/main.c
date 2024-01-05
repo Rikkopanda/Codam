@@ -3,6 +3,8 @@
 
 int cont = 0;
 
+
+
 int main(int argc, char **argv)
 {
 	arguments args;
@@ -13,7 +15,6 @@ int main(int argc, char **argv)
 	if(create_philos(&philos, &args) == -1)
 		return (-1);
 	join_philos(philos, args.number_of_philosophers);
-
 	free(philos);
-	printf("cont: %d\n", cont);
+	// printf("cont: %d\n", cont);
 }

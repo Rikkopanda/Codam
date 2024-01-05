@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rverhoev <rverhoev@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rik <rik@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by you-              #+#    #+#             */
-/*   Updated: 2023/11/16 20:01:13 by rverhoev         ###   ########.fr       */
+/*   Updated: 2024/01/01 19:46:14 by rik              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,34 @@ int putpixel(int r, int g, int b, int a)
 
 void new_resize_img(t_img original_img, double scale);
 
+void init_ptrs1(ptrs	*ptrs, t_img *img_backgr, t_img *img_monkey, t_img *img_base)
+{
+	(*ptrs).img_backgr = img_backgr;
+	(*ptrs).img_ptr = img_monkey;
+	(*ptrs).img_base = img_base;
+}
+
+void init_ptrs2(ptrs	*ptrs, void *win_ptr, void *mlx_ptr)
+{
+	(*ptrs).win_ptr = win_ptr;
+	(*ptrs).mlx_ptr = mlx_ptr;
+}
+
+void init_pos(ptrs	*ptrs, int pos_x, int pos_y)
+{
+	(*ptrs).x_pos_block = pos_x;
+	(*ptrs).y_pos_block = pos_y;
+}
+
+void destroys_and_free(ptrs *ptrs)
+{
+	mlx_destroy_image((*ptrs).mlx_ptr, (*ptrs).img_ptr->img_ptr);
+	mlx_destroy_image((*ptrs).mlx_ptr, (*ptrs).img_base->img_ptr);
+	mlx_destroy_image((*ptrs).mlx_ptr, (*ptrs).img_backgr->img_ptr);
+	mlx_destroy_display((*ptrs).mlx_ptr);
+	free((*ptrs).mlx_ptr);
+}
+
 int main(void)
 {
  	t_win	mlx;
@@ -41,18 +69,13 @@ int main(void)
 	t_img	img_monkey;
 	ptrs	ptrs;
 
-	ptrs.x_pos_block = 50;
-	ptrs.y_pos_block = 50;
-	ptrs.img_backgr = &img_bg;
-	ptrs.img_ptr = &img_monkey;
-	ptrs.img_base = &base_image;
-	// int_ptrs(ptrs, &img_bg, &base_image, &img_monkey);
+	init_pos(&ptrs, 50, 50);
+	init_ptrs1(&ptrs, &img_bg, &img_monkey, &base_image);
 	signal(SIGINT, sig_handler);
-	mlx = new_window(1000, 650, "transparency");
-	ptrs.win_ptr = mlx.win_ptr;
-	ptrs.mlx_ptr = mlx.mlx_ptr;
+	mlx = new_window(1000, 650, "transparency test");
 	if (!mlx.win_ptr)
 		return (2);
+	init_ptrs2(&ptrs, mlx.win_ptr, mlx.mlx_ptr);
 	base_image = new_img(1000, 650, mlx);
 	{
 		img_bg = new_file_img("sky3.xpm", mlx);
@@ -66,14 +89,9 @@ int main(void)
 			return (2);
 		put_img_to_img(base_image, img_monkey, ptrs.x_pos_block, ptrs.y_pos_block);
 	}
-	mlx_put_image_to_window (base_image.win.mlx_ptr, base_image.win.win_ptr, base_image.img_ptr, 0, 0);
+	mlx_put_image_to_window(base_image.win.mlx_ptr, base_image.win.win_ptr, base_image.img_ptr, 0, 0);
 	mlx_hook(base_image.win.win_ptr, 2, 1L<<0, key_pressed, &ptrs);
-	
-	
 	mlx_loop(mlx.mlx_ptr);
-	// mlx_destroy_image(mlx.mlx_ptr, img_monkey.img_ptr);
-	// mlx_destroy_image(mlx.mlx_ptr, base_image.img_ptr);
-	mlx_destroy_window(mlx.mlx_ptr, mlx.win_ptr);
+	destroys_and_free(&ptrs);
 	return (0);
 }
-

@@ -1,48 +1,103 @@
 
 #include "philosophers.h"
 
-extern pthread_mutex_t lock;
+pthread_mutex_t print_lock;
+
+void printfunc(t_philosophers *philo, struct timeval *tv, char *print_str)
+{
+	unsigned long current_time;
+	unsigned long print_date;
+	const int	print_interval = 500;
+
+	gettimeofday(tv, NULL);
+	current_time = ((*tv).tv_sec * 1000) + ((*tv).tv_usec / 1000);
+	if(current_time >= (*philo).print_date)
+	{
+		pthread_mutex_lock(&print_lock);
+		printf("philo %d %s", philo->philo_Nbr, print_str);
+		pthread_mutex_unlock(&print_lock);
+		(*philo).print_date = current_time + print_interval;
+	}
+}
+
+void printfunc2(t_philosophers *philo, struct timeval *tv, char *print_str)
+{
+		pthread_mutex_lock(&print_lock);
+		printf("philo %d %s", philo->philo_Nbr, print_str);
+		pthread_mutex_unlock(&print_lock);
+}
+
+void phil_eat(t_philosophers *philo, struct timeval *tv)
+{
+	unsigned long start;
+	unsigned long current_time;
+
+	gettimeofday(tv, NULL);
+	start = ((*tv).tv_sec * 1000) + ((*tv).tv_usec / 1000);
+	while(1)
+	{
+		printfunc(philo, tv, "is eating...\n");
+		gettimeofday(tv, NULL);
+		current_time = ((*tv).tv_sec * 1000) + ((*tv).tv_usec / 1000);
+		if((current_time - start) >=  philo->args->time_to_eat)
+			break ;
+	}
+	philo->last_meal_ms = current_time;
+}
+
+void phil_sleep(t_philosophers *philo, struct timeval *tv)
+{
+	unsigned long start;
+	unsigned long current_time;
+
+	gettimeofday(tv, NULL);
+	start = ((*tv).tv_sec * 1000) + ((*tv).tv_usec / 1000);
+	while(1)
+	{
+		printfunc(philo, tv, " is sleeping...\n");
+		gettimeofday(tv, NULL);
+		current_time = ((*tv).tv_sec * 1000) + ((*tv).tv_usec / 1000);
+		if((current_time - start) >=  philo->args->time_to_sleep)
+			break ;
+	}
+}
+
+int check_health(t_philosophers *philo, struct timeval *tv)
+{
+	int time_since_meal;
+
+	time_since_meal = time_since_last_meal(philo, tv);
+	if(time_since_meal >= philo->args->time_to_die)
+	{
+		pthread_mutex_unlock(&(*philo).left_fork->lock);
+		pthread_mutex_unlock(&(*philo).right_fork->lock);
+		return (printfunc(philo, tv, "died\n"), -1);
+	}
+	return (0);
+}
 
 void  *routine(void *ptr)
 {
 	t_philosophers *philo = (t_philosophers *)ptr;
 	struct timeval tv;
-	int time_since_meal;
+	(*philo).print_date = 0;
 
 	set_args_philo(philo, &tv);
 	assign_fork_ptrs(philo);
 	find_adjecent_philos(philo);
-	unsigned long start_eating;
-	unsigned long current_time;
-
 	while(1)
 	{
-		pthread_mutex_lock(&lock);
-		time_since_meal = time_since_last_meal(philo, &tv);
-		if(time_since_meal >= philo->args->time_to_die)
-		{
-			pthread_mutex_unlock(&lock);
-			return (printf("philo %d died, %d ms since last ate\n", philo->philo_Nbr, time_since_meal), NULL);
-		}
-		philo->left_fork->fork = 1;
-		philo->right_fork->fork = 1;
-		gettimeofday(&tv, NULL);
-		start_eating = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-		while(1)
-		{
-			usleep(100 * 1000);
-			printf("philo %d is eating...\n", philo->philo_Nbr);
-			gettimeofday(&tv, NULL);
-			current_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-			if((current_time - start_eating) >=  philo->args->time_to_eat)
-				break ;
-		}
-		philo->last_meal_ms = current_time;
-		pthread_mutex_unlock(&lock);
-		time_since_meal = time_since_last_meal(philo, &tv);
-		if(time_since_meal >= philo->args->time_to_die)
-			return (printf("philo %d died, %d ms since last ate\n", philo->philo_Nbr, time_since_meal), NULL);
+		pthread_mutex_lock(&(*philo).right_fork->lock);
+		pthread_mutex_lock(&(*philo).left_fork->lock);
+		printfunc2(philo, &tv, "took left and right fork\n");
+		if(check_health(philo, &tv) == -1)
+			break ;
+		phil_eat(philo, &tv);
+		pthread_mutex_unlock(&(*philo).left_fork->lock);
+		pthread_mutex_unlock(&(*philo).right_fork->lock);
+		phil_sleep(philo, &tv);
 	}
-	//printf("th_id %d time since meal: %d ms\n", philo->philo_Nbr , );
+	pthread_mutex_destroy(&(*philo).left_fork->lock);
+	pthread_mutex_destroy(&(*philo).right_fork->lock);
 	return (NULL);
 }

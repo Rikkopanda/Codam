@@ -22,12 +22,16 @@ void assign_fork_ptrs(t_philosophers *philo)
 	if(philo->philo_Nbr < philo->args->number_of_philosophers)
 	{
 		philo->right_fork = philo->args->forks_ptr + philo->philo_Nbr - 1;
+		pthread_mutex_init(&philo->right_fork->lock, NULL);
 		philo->left_fork = philo->args->forks_ptr + philo->philo_Nbr;
+		pthread_mutex_init(&philo->left_fork->lock, NULL);
 	}
 	else
 	{
 		philo->right_fork = philo->args->forks_ptr + philo->philo_Nbr - 1;
+		pthread_mutex_init(&philo->right_fork->lock, NULL);
 		philo->left_fork = philo->args->forks_ptr + 0;
+		pthread_mutex_init(&philo->left_fork->lock, NULL);
 	}
 }
 
